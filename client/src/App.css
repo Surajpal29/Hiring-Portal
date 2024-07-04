@@ -1,0 +1,14 @@
+.bgc {
+  background: linear-gradient(
+    111.2deg,
+    rgba(254, 254, 255, 0.94) 0%,
+    rgba(166, 177, 214, 0.94) 97.81%
+  );
+}
+.browseByCategory {
+  background: rgba(243, 247, 250, 1);
+}
+
+.footer {
+  background: #abb5d8;
+}
