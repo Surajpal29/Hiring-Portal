@@ -56,7 +56,7 @@ const Login = () => {
     }
   };
 
-  const notify = () => toast("loged in successfully");
+  const notify = () => toast.success("loged in successfully");
   return (
     <div>
       <section className="bg-red-50 shadow-2xl min-h-screen flex items-center justify-center">

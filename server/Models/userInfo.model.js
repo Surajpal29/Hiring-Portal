@@ -61,6 +61,10 @@ const userInfoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  profilepic: {
+    type: String,
+    default: "/client/public/images",
+  },
 });
 
 const UserInfo = mongoose.model("UserInfo", userInfoSchema);

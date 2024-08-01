@@ -39,9 +39,10 @@ const Login = () => {
       // Redirect user to home page or perform any other action upon successful registration
     } catch (error) {
       console.error("Error during registration:", error);
+      toast.error("Error during registration : ", error.message);
     }
   };
-  const notify = () => toast("User registration successful 👍");
+  const notify = () => toast.success("User registration successful 👍");
   return (
     <div>
       <section className="bg-red-50 shadow-2xl min-h-screen flex items-center justify-center">

@@ -1,10 +1,15 @@
 import React, { useState } from "react";
+import axios from "axios";
 import InfoIcon from "@mui/icons-material/Info";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import AddIcon from "@mui/icons-material/Add";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { bool } from "prop-types";
+
 const UserInfoForm = () => {
+  const navigate = useNavigate();
+  const [isSuccess, setIsSuccess] = useState(0);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,8 +24,10 @@ const UserInfoForm = () => {
     experience: "",
     DomainOfInterest: [],
     jobType: "",
-    Resume: "",
+    Resume: null,
+    profilepic: null, // Initialize profilepic as null
   });
+
   const list = [
     "Personal Info",
     "Education & Qualification",
@@ -37,11 +44,13 @@ const UserInfoForm = () => {
   ];
 
   const [index, setIndex] = useState(0);
+
   function handleClickContinue() {
     if (index < 3) {
       setIndex(index + 1);
     }
   }
+
   function handleClickPrevious() {
     if (index > 0) {
       setIndex(index - 1);
@@ -56,9 +65,8 @@ const UserInfoForm = () => {
       setDomainOfInterest([...domainOfInterest, domainitem]);
       setFormData({
         ...formData,
-        DomainOfInterest: [...formData.DomainOfInterest, domainitem], // Assuming formData has a property named 'skills' which is an array
+        DomainOfInterest: [...formData.DomainOfInterest, domainitem],
       });
-      // Clear the input field by setting domainitem to an empty string
       setDomainitem("");
       console.log("Domain of interest added:", domainOfInterest);
     } else {
@@ -67,39 +75,73 @@ const UserInfoForm = () => {
   };
 
   const [skills, setSkills] = useState([]);
-  const [skillsItem, setSkillItems] = useState();
+  const [skillsItem, setSkillItems] = useState("");
 
-  const handleappendskill = () => {
+  const handleAppendSkill = () => {
     if (skillsItem.trim() !== "") {
       setSkills([...skills, skillsItem]);
       setFormData({
         ...formData,
-        skills: [...formData.skills, skillsItem], // Assuming formData has a property named 'skills' which is an array
+        skills: [...formData.skills, skillsItem],
       });
-      // Clear the input field by setting domainitem to an empty string
       setSkillItems("");
-      console.log("skills added:", skills);
+      console.log("Skills added:", skills);
     } else {
       console.log("Please enter a valid skill");
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, profilepic: file });
+  };
+  const handleResumeFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, resumeFile: file });
+  };
   const handleClickSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(formData);
+      const formDataToSend = new FormData();
+      formDataToSend.append("profilepic", formData.profilepic);
+      formDataToSend.append("firstName", formData.firstName);
+      formDataToSend.append("lastName", formData.lastName);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("DOB", formData.DOB);
+      formDataToSend.append("phoneNumber", formData.phoneNumber);
+      formDataToSend.append("gender", formData.gender);
+      formDataToSend.append("city", formData.city);
+      formDataToSend.append("country", formData.country);
+      formDataToSend.append(
+        "HighestQualification",
+        formData.HighestQualification
+      );
+      formDataToSend.append("skills", JSON.stringify(formData.skills)); // Send as JSON string
+      formDataToSend.append("experience", formData.experience);
+      formDataToSend.append(
+        "DomainOfInterest",
+        JSON.stringify(formData.DomainOfInterest)
+      ); // Send as JSON string
+      formDataToSend.append("jobType", formData.jobType);
+      formDataToSend.append("Resume", formData.Resume);
+
       const response = await axios.post(
         "http://localhost:8000/user/UserInfoFormData",
-        formData
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       console.log(response);
 
-      if (response.status === 200) {
+      if (response.status === 200 && isSuccess) {
         navigate("/");
       }
     } catch (error) {
-      console.error("catch", error);
+      console.error("Error uploading data:", error);
     }
   };
 
@@ -110,71 +152,34 @@ const UserInfoForm = () => {
       </div>
       <div className="mt-10">
         <ul className="flex gap-10 justify-center">
-          <li>
-            <div
-              className={`flex flex-col items-center justify-center text-gray-500 cursor-pointer ${
-                index == 0 ? ` scale-125 text-black` : ``
-              }`}
-              onClick={(e) => setIndex(0)}
-            >
-              <span>
-                <InfoIcon />
-              </span>
-              <h6>{list[0]}</h6>
-            </div>
-          </li>
-          <li>
-            <div
-              className={`flex flex-col items-center justify-center text-gray-500 cursor-pointer ${
-                index == 1 ? ` scale-125 text-black` : ``
-              }`}
-              onClick={(e) => setIndex(1)}
-            >
-              <span>
-                <InfoIcon />
-              </span>
-              <h6>{list[1]}</h6>
-            </div>
-          </li>
-          <li>
-            <div
-              className={`flex flex-col items-center justify-center text-gray-500 cursor-pointer ${
-                index == 2 ? ` scale-125 text-black` : ``
-              }`}
-              onClick={(e) => setIndex(2)}
-            >
-              <span>
-                <InfoIcon />
-              </span>
-              <h6>{list[2]}</h6>
-            </div>
-          </li>
-          <li>
-            <div
-              className={`flex flex-col items-center justify-center text-gray-500 cursor-pointer${
-                index == 3 ? ` scale-125 text-black` : ``
-              }`}
-              onClick={(e) => setIndex(3)}
-            >
-              <span>
-                <InfoIcon />
-              </span>
-              <h6>{list[index]}</h6>
-            </div>
-          </li>
+          {list.map((item, idx) => (
+            <li key={idx}>
+              <div
+                className={`flex flex-col items-center justify-center text-gray-500 cursor-pointer ${
+                  index === idx ? ` scale-125 text-black` : ``
+                }`}
+                onClick={() => setIndex(idx)}
+              >
+                <span>
+                  <InfoIcon />
+                </span>
+                <h6>{item}</h6>
+              </div>
+            </li>
+          ))}
         </ul>
       </div>
       <hr className="w-full mt-5 h-1 bg-black" />
       <div className="flex items-center justify-center mt-10">
-        <form action="">
-          {index == 0 && (
+        <form onSubmit={handleClickSubmit}>
+          {index === 0 && (
             <div className="w-[50vw]  h-56 grid grid-cols-2 gap-4 content-around">
               <div>
-                <label htmlFor="">First name {index}</label>
+                <label>First name</label>
                 <br />
                 <input
                   type="text"
-                  placeholder="enter first name"
+                  placeholder="Enter first name"
                   className="border"
                   onChange={(e) =>
                     setFormData({ ...formData, firstName: e.target.value })
@@ -182,52 +187,43 @@ const UserInfoForm = () => {
                 />
               </div>
               <div>
-                <label htmlFor="">last name</label>
+                <label>Last name</label>
                 <br />
                 <input
                   type="text"
-                  placeholder="enter last name"
+                  placeholder="Enter last name"
                   className="border"
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      lastName: e.target.value,
-                    })
+                    setFormData({ ...formData, lastName: e.target.value })
                   }
                 />
               </div>
               <div>
-                <label htmlFor="">Email</label>
+                <label>Email</label>
                 <br />
                 <input
                   type="email"
-                  placeholder="enter your Email id"
+                  placeholder="Enter your Email ID"
                   className="border"
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      email: e.target.value,
-                    })
+                    setFormData({ ...formData, email: e.target.value })
                   }
                 />
               </div>
               <div>
-                <label htmlFor="">phone Number</label>
+                <label>Phone Number</label>
                 <br />
                 <input
                   type="text"
-                  placeholder="enter phone number"
+                  placeholder="Enter phone number"
                   className="border"
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      phoneNumber: e.target.value,
-                    })
+                    setFormData({ ...formData, phoneNumber: e.target.value })
                   }
                 />
               </div>
               <div>
-                <label htmlFor="">Date of Birth</label>
+                <label>Date of Birth</label>
                 <br />
                 <input
                   type="date"
@@ -238,7 +234,7 @@ const UserInfoForm = () => {
                 />
               </div>
               <div className="flex gap-4 items-center justify-start">
-                <label htmlFor="">Gender</label>
+                <label>Gender</label>
                 <br />
                 <input
                   type="radio"
@@ -249,7 +245,7 @@ const UserInfoForm = () => {
                     setFormData({ ...formData, gender: e.target.value })
                   }
                 />
-                <label htmlFor="">Male</label>
+                <label>Male</label>
                 <input
                   type="radio"
                   id="Female"
@@ -259,24 +255,24 @@ const UserInfoForm = () => {
                     setFormData({ ...formData, gender: e.target.value })
                   }
                 />
-                <label htmlFor="">Female</label>
+                <label>Female</label>
                 <input
                   type="radio"
                   id="Other"
-                  value="other"
+                  value="Other"
                   name="gender"
                   onChange={(e) =>
                     setFormData({ ...formData, gender: e.target.value })
                   }
                 />
-                <label htmlFor="">Other</label>
+                <label>Other</label>
               </div>
               <div>
-                <label htmlFor="">City</label>
+                <label>City</label>
                 <br />
                 <input
                   type="text"
-                  placeholder="enter City name"
+                  placeholder="Enter City name"
                   className="border"
                   onChange={(e) =>
                     setFormData({ ...formData, city: e.target.value })
@@ -284,11 +280,11 @@ const UserInfoForm = () => {
                 />
               </div>
               <div>
-                <label htmlFor="">Country Name</label>
+                <label>Country Name</label>
                 <br />
                 <input
                   type="text"
-                  placeholder="enter country name"
+                  placeholder="Enter country name"
                   className="border"
                   onChange={(e) =>
                     setFormData({ ...formData, country: e.target.value })
@@ -297,219 +293,194 @@ const UserInfoForm = () => {
               </div>
             </div>
           )}
-          {index == 1 && (
+          {index === 1 && (
             <div>
               <h5 className="font-semibold text-4xl">Your Highest Education</h5>
               <div className="w-[40vw] flex gap-4 flex-wrap mt-10">
-                {educationList.map(
-                  (
-                    education,
-                    index // changed variable name
-                  ) => (
-                    <span
-                      key={index}
-                      onClick={(e) => {
-                        e.currentTarget.className =
-                          "bg-black text-white border w-fit rounded-lg py-1 px-3 flex  cursor-pointer";
-                        setFormData({
-                          ...formData,
-                          HighestQualification: educationList[index],
-                        });
-                      }}
-                      className="border w-fit rounded-lg border-green-400  py-1 px-3 flex  cursor-pointer"
-                    >
-                      {education} {/* changed from educationList[index] */}
-                    </span>
-                  )
-                )}
+                {educationList.map((education, idx) => (
+                  <span
+                    key={idx}
+                    onClick={(e) => {
+                      e.currentTarget.className =
+                        "bg-black text-white border w-fit rounded-lg py-1 px-3 flex  cursor-pointer";
+                      setFormData({
+                        ...formData,
+                        HighestQualification: education,
+                      });
+                    }}
+                    className="bg-gray-300 text-black border w-fit rounded-lg py-1 px-3 flex  cursor-pointer"
+                  >
+                    {education}
+                  </span>
+                ))}
               </div>
             </div>
           )}
-          {index == 2 && (
+          {index === 2 && (
             <div>
               <div>
-                <h5 className="font-semibold text-4xl">Skills</h5>
-                <input
-                  type="text"
-                  placeholder="enter your skills"
-                  className="border px-1 py-2 rounded-lg mr-2"
-                  value={skillsItem} // Add value attribute to bind the input to the state
-                  onChange={(e) => setSkillItems(e.target.value)} // Update the state with the input value
-                />
-
-                <AddIcon
-                  className="bborder border-black bg-cyan-300 rounded-lg"
-                  onClick={handleappendskill}
-                />
-                <div className="flex gap-3 mt-3">
-                  {skills.length > 0 &&
-                    skills.map((item, index) => (
-                      <span
-                        key={index}
-                        className="border px-3 py-1  rounded-lg"
-                      >
-                        {item}
-                      </span>
-                    ))}
+                <div>
+                  <h5 className="font-semibold text-2xl">Skills</h5>
+                  <input
+                    type="text"
+                    placeholder="Add your skills"
+                    value={skillsItem}
+                    onChange={(e) => setSkillItems(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="bg-black text-white border py-1 px-3"
+                    onClick={handleAppendSkill}
+                  >
+                    <AddIcon />
+                  </button>
+                  <br />
+                </div>
+                <div className="w-[40vw] flex gap-4 flex-wrap mt-2">
+                  {skills.map((skill, idx) => (
+                    <span
+                      key={idx}
+                      className="bg-black text-white border w-fit rounded-lg py-1 px-3 flex  cursor-pointer"
+                    >
+                      {skill}
+                    </span>
+                  ))}
                 </div>
               </div>
+              <br />
               <div>
-                <h5 className="font-semibold text-4xl">
-                  Do You Have Work Experience
-                </h5>
-                <div className="flex gap-4 mt-5">
-                  <label
-                    htmlFor=""
-                    onClick={(e) =>
-                      setFormData({
-                        ...formData,
-                        gender: e.target.value,
-                      })
-                    }
-                  >
-                    experience
-                  </label>
+                <h5 className="font-semibold text-2xl">Domain of interest</h5>
+                <input
+                  type="text"
+                  placeholder="Add your domain of interest"
+                  value={domainitem}
+                  onChange={(e) => setDomainitem(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="bg-black text-white border py-1 px-3"
+                  onClick={handleAppendData}
+                >
+                  <AddIcon />
+                </button>
+                <br />
+                <div className="w-[40vw] flex gap-4 flex-wrap mt-2">
+                  {domainOfInterest.map((item, idx) => (
+                    <span
+                      key={idx}
+                      className="bg-black text-white border w-fit rounded-lg py-1 px-3 flex  cursor-pointer"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-4 mt-10">
+                <div>
+                  <label>Years of Experience</label>
                   <br />
                   <input
-                    type="radio"
-                    id="Yes"
-                    value="Yes"
-                    name="experience"
+                    type="text"
+                    placeholder="Add your experience"
+                    className="border"
                     onChange={(e) =>
                       setFormData({ ...formData, experience: e.target.value })
                     }
                   />
-                  <label htmlFor="">Yes</label>
+                </div>
+                <div>
+                  <label>Resume</label>
+                  <br />
                   <input
-                    type="radio"
-                    id="No"
-                    value="No"
-                    name="experience"
+                    type="file"
+                    placeholder="Add your resume"
+                    className="border"
+                    accept=".pdf,.docx"
                     onChange={(e) =>
-                      setFormData({ ...formData, experience: e.target.value })
+                      setFormData({ ...formData, Resume: e.target.files[0] })
                     }
                   />
-                  <label htmlFor="">No</label>
                 </div>
               </div>
             </div>
           )}
           {index === 3 && (
             <div>
-              <div>
-                <h5 className="font-semibold text-4xl">Domain Of Interest</h5>
+              <h5 className="font-semibold text-2xl">
+                Select your preferred job type
+              </h5>
+              <div className="flex gap-4 items-center justify-start mt-10">
                 <input
-                  type="text"
-                  placeholder="enter your interest"
-                  className="py-1 px-3 border mt-4 rounded-lg"
-                  value={domainitem} // Bind input value to domainitem state
-                  onChange={(e) => setDomainitem(e.target.value)} // Update domainitem state with input value
+                  type="radio"
+                  id="Permanent"
+                  value="Permanent"
+                  name="jobType"
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobType: e.target.value })
+                  }
                 />
-
-                <span onClick={handleAppendData}>
-                  <AddIcon />
-                </span>
-                <div className="flex gap-3 mt-3">
-                  {domainOfInterest.length > 0 &&
-                    domainOfInterest.map((item, index) => (
-                      <span
-                        key={index}
-                        className="border px-3 py-1  rounded-lg"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                </div>
+                <label>Permanent</label>
+                <input
+                  type="radio"
+                  id="Temporary"
+                  value="Temporary"
+                  name="jobType"
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobType: e.target.value })
+                  }
+                />
+                <label>Temporary</label>
+                <input
+                  type="radio"
+                  id="Contract"
+                  value="Contract"
+                  name="jobType"
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobType: e.target.value })
+                  }
+                />
+                <label>Contract</label>
               </div>
-              <div className="flex gap-4 items-center justify-start mt-5">
-                <label htmlFor="" className="font-semibold ">
-                  Job Type
-                </label>
+              <br />
+              <div>
+                <label>Profile Picture</label>
                 <br />
                 <input
-                  type="radio"
-                  id="Full time"
-                  value="Full time"
-                  name="jobtype"
-                  onClick={(e) =>
-                    setFormData({
-                      ...formData,
-                      jobType: e.target.value,
-                    })
-                  }
-                />
-                <label htmlFor="">Full time</label>
-                <input
-                  type="radio"
-                  id="Part Time"
-                  value="Part Time"
-                  name="jobtype"
-                  onClick={(e) =>
-                    setFormData({
-                      ...formData,
-                      jobType: e.target.value,
-                    })
-                  }
-                />
-                <label htmlFor="">Part Time</label>
-                <input
-                  type="radio"
-                  id="Internship"
-                  value="Internship"
-                  name="jobtype"
-                  onClick={(e) =>
-                    setFormData({
-                      ...formData,
-                      jobType: e.target.value,
-                    })
-                  }
-                />
-                <label htmlFor="">Internship</label>
-              </div>
-              <div>
-                <h5 className=" text-2xl font-semibold mt-5 mb-3">
-                  upload your Resume
-                </h5>
-                <input
                   type="file"
-                  onChange={(e) => {
-                    const file = e.target.files[0]; // Get the first file selected by the user
-                    setFormData({ ...formData, Resume: file });
-                  }}
+                  onChange={handleFileChange}
+                  className="border"
                 />
               </div>
             </div>
           )}
+          <br />
+          <div className="flex items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={handleClickPrevious}
+              className="bg-black text-white border py-1 px-3"
+            >
+              <ArrowLeftIcon />
+            </button>
+            {index !== 3 ? (
+              <button
+                type="button"
+                onClick={handleClickContinue}
+                className="bg-black text-white border py-1 px-3"
+              >
+                <ArrowRightIcon />
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsSuccess(1)}
+                type="submit"
+                className="bg-black text-white border py-1 px-3"
+              >
+                Submit
+              </button>
+            )}
+          </div>
         </form>
-      </div>
-      <div className=" mt-10 flex items-center relative justify-end gap-2 mx-28">
-        {index != 0 && (
-          <button
-            className="border py-1 px-2 rounded-md  border-blue-500"
-            onClick={handleClickPrevious}
-          >
-            <ArrowLeftIcon />
-            previous
-          </button>
-        )}
-        {index < 3 && (
-          <button
-            className="border py-1 px-2 rounded-md border-blue-500"
-            onClick={handleClickContinue}
-          >
-            Next
-            <ArrowRightIcon />
-          </button>
-        )}
-        {index == 3 && (
-          <button
-            className="border py-1 px-2 rounded-md border-blue-500"
-            onClick={handleClickSubmit}
-          >
-            submit
-            <ArrowRightIcon onClick={handleClickSubmit} />
-          </button>
-        )}
       </div>
     </div>
   );

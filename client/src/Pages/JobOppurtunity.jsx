@@ -9,9 +9,12 @@ import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import GroupIcon from "@mui/icons-material/Group";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const JobOppurtunity = () => {
   const id = useId();
+  const navigate = useNavigate();
   const userData = useSelector((state) => state.userData);
   console.log(userData);
   const [data, setData] = useState([]);
@@ -22,7 +25,7 @@ const JobOppurtunity = () => {
         const response = await axios.get("http://localhost:8000/api/data");
 
         setData(response.data);
-        console.log(data);
+        console.log("data from joboppurtunity", data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -32,84 +35,13 @@ const JobOppurtunity = () => {
   }, []);
   const handleJobLink = (link) => {
     // Open the link in a new tab when the button is clicked
-    window.open(link, "_blank");
+    if (userData && userData[1]) window.open(link, "_blank");
+    else {
+      notify();
+      navigate("/login");
+    }
   };
-
-  const cardData = [
-    {
-      id: id,
-      companyLogo: "logo",
-      companyName: "CompanyName",
-      JobTitle: "Product Designer",
-      skillsRequired: ["Adobe ", "Figma", "Canva"],
-      postedDate: "posted on 20/4/24",
-      PaymentInRupees: 5000,
-    },
-    {
-      id: id,
-      companyLogo: "logo",
-      companyName: "CompanyName",
-      JobTitle: "Product Designer",
-      skillsRequired: ["Adobe xd", "Figma", "Canva"],
-      postedDate: "posted on 20/4/24",
-      PaymentInRupees: 5000,
-    },
-    {
-      id: id,
-      companyLogo: "logo",
-      companyName: "CompanyName",
-      JobTitle: "Product Designer",
-      skillsRequired: ["Adobe xd", "Figma", "Canva"],
-      postedDate: "posted on 20/4/24",
-      PaymentInRupees: 5000,
-    },
-    {
-      id: id,
-      companyLogo: "logo",
-      companyName: "CompanyName",
-      JobTitle: "Product Designer",
-      skillsRequired: ["Adobe xd", "Figma", "Canva"],
-      postedDate: "posted on 20/4/24",
-      PaymentInRupees: 5000,
-    },
-
-    {
-      id: id,
-      companyLogo: "logo",
-      companyName: "CompanyName",
-      JobTitle: "Product Designer",
-      skillsRequired: ["Adobe xd", "Figma", "Canva"],
-      postedDate: "posted on 20/4/24",
-      PaymentInRupees: 5000,
-    },
-    {
-      id: id,
-      companyLogo: "logo",
-      companyName: "CompanyName",
-      JobTitle: "Product Designer",
-      skillsRequired: ["Adobe xd", "Figma", "Canva"],
-      postedDate: "posted on 20/4/24",
-      PaymentInRupees: 5000,
-    },
-    {
-      id: id,
-      companyLogo: "logo",
-      companyName: "CompanyName",
-      JobTitle: "Product Designer",
-      skillsRequired: ["Adobe xd", "Figma", "Canva"],
-      postedDate: "posted on 20/4/24",
-      PaymentInRupees: 5000,
-    },
-    {
-      id: id,
-      companyLogo: "logo",
-      companyName: "CompanyName",
-      JobTitle: "Product Designer",
-      skillsRequired: ["Adobe xd", "Figma", "Canva"],
-      postedDate: "posted on 20/4/24",
-      PaymentInRupees: 5000,
-    },
-  ];
+  const notify = () => toast.info("please login!....");
 
   return (
     <div className="w-full px-4 py-2">
@@ -117,106 +49,68 @@ const JobOppurtunity = () => {
         ~Latest Job Opportunities
       </h3>
       <hr className="text-gray-400 mx-10" />
-      {/* card */}
-
-      {/* <div className="w-full flex flex-wrap justify-center gap-4">
-        {data.map((data) => (
-          <div
-            key={data.id}
-            className="w-full max-w-[300px] border rounded-lg shadow-xl px-3 py-4 mt-4 hover:scale-105 transition ease-in-out duration-300"
-          >
-            <div className="flex justify-around items-center">
-              <span className="w-12 h-12 bg-green-300 rounded-full"></span>
-              <h5 className="font-semibold">{data.companyName}</h5>
-            </div>
-            <div className="mt-2">
-              <h6 className="text-lg">{data.title}</h6>
-            </div>
-            <div className="mt-5">
-              <ol className="flex gap-2 flex-wrap">
-                {data.skillsRequired.map((skill, index) => (
-                  <li key={index} className="bg-gray-300 py-1 px-2 rounded-2xl">
-                    {skill}
-                  </li>
-                ))}
-              </ol>
-            </div>
-            <div className="flex items-center justify-between gap-3 mt-4">
-              <hr className="w-8 h-[1px] text-gray-400" />
-              <p>{data.postedDate}</p>
-            </div>
-            <div className="flex items-center justify-between mt-5">
-              <h6>RS {data.PaymentInRupees}</h6>
-              <button className="py-1 px-3 rounded-3xl bg-blue-400 flex items-center justify-center">
-                Apply
-              </button>
-            </div>
-          </div>
-        ))}
-      </div> */}
-      <div className={"w-full  pl-10 flex gap-4 flex-wrap "}>
-        {data.slice(0, 8).map((data, index) => (
+      <div className="w-full pl-10 flex flex-wrap gap-4">
+        {data.slice(0, 8).map((job, index) => (
           <div
             key={index}
-            className="w-[22.5vw]   bg-cyan-100 border-2 rounded-lg overflow-hidden pt-3 pl-3 shadow-lg"
+            className="w-full md:w-[45%] lg:w-[22.5%] bg-cyan-100 border-2 rounded-lg overflow-hidden p-3 shadow-lg flex flex-col"
           >
-            <div className="w-full h-[4vw]  flex items-center justify-between">
-              <div className="w-[4vw] h-[4vw] bg-purple-400 rounded-lg overflow-hidden">
-                {/* {data.organization.logo_url} */}
-                <img src={data.organization.logo_url} alt="" />
+            <div className="w-full flex items-center justify-between">
+              {job.organization.logo_url && (
+                <div className="w-16 h-16 md:w-12 md:h-12 lg:w-8 lg:h-8 bg-purple-400 rounded-lg overflow-hidden">
+                  <img
+                    src={job.organization.logo_url}
+                    alt="Company Logo"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="flex flex-col flex-grow px-2">
+                <h5 className="text-sm font-bold">{job.title}</h5>
+                <h6 className="text-xs">{job.organization.name}</h6>
               </div>
-              <div>
-                <h5 className="text-sm font-bold">{data.title}</h5>
-                <h6 className="text-xs">{data.organization.name}</h6>
-              </div>
-              <div className="w-[3vw] h-[1.7vw] flex items-center justify-center rounded-s-lg bg-yellow-700">
+              <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-yellow-700">
                 <BookmarkBorderIcon />
               </div>
             </div>
-            <div className="w-full  my-3 pr-3 grid grid-cols-2 items-start">
-              <div className="w-[100%] gap-y-2  flex flex-col items-start">
-                <span className="flex gap-2 text-xs items-center justify-center">
+            <div className="w-full my-3 grid grid-cols-2 gap-2">
+              <div className="flex flex-col gap-y-2">
+                <span className="flex gap-2 text-xs items-center">
                   <BusinessCenterOutlinedIcon /> <p>Full Time</p>
                 </span>
-
-                <span className="flex gap-2 text-xs items-center justify-center">
-                  <WorkHistoryOutlinedIcon />{" "}
+                <span className="flex gap-2 text-xs items-center">
+                  <WorkHistoryOutlinedIcon />
                   <p>
-                    {data.min_experience}
-                    <sup>+</sup>
-                    year
+                    {job.min_experience}
+                    <sup>+</sup> year
                   </p>
                 </span>
-                <span className="flex gap-2 text-xs items-center justify-center">
-                  <CurrencyRupeeOutlinedIcon /> <p>{data.salary_detail}</p>
+                <span className="flex gap-2 text-xs items-center">
+                  <CurrencyRupeeOutlinedIcon /> <p>{job.salary_detail}</p>
                 </span>
               </div>
-              <div className="w-[100%] flex gap-y-2 flex-col items-start ">
-                <span className="flex gap-2 text-xs items-center justify-center">
-                  <CalendarMonthOutlinedIcon /> <p>{data.last_updated}</p>
+              <div className="flex flex-col gap-y-2">
+                <span className="flex gap-2 text-xs items-center">
+                  <CalendarMonthOutlinedIcon /> <p>{job.last_updated}</p>
                 </span>
-
-                <span className="flex gap-2 items-center justify-center text-xs">
-                  <LocationOnOutlinedIcon />{" "}
-                  <p>
-                    {data.address.city.name},{data.address.city.json_data.state}
-                  </p>
+                <span className="flex gap-2 text-xs items-center">
+                  <LocationOnOutlinedIcon /> <p>{job.address.line_1}</p>
                 </span>
-                <span className="flex gap-2 text-xs items-center justify-center">
-                  <GroupIcon /> <p>{data.no_of_openings}</p>
+                <span className="flex gap-2 text-xs items-center">
+                  <GroupIcon /> <p>{job.no_of_openings}</p>
                 </span>
               </div>
-              <div className="w-[15vw] flex items-center justify-between mt-3">
-                <button
-                  className="w-fit  py-1 px-2 rounded-2xl bg-red-500"
-                  onClick={() => handleJobLink(data.public_url)}
-                >
-                  Apply Now
-                </button>
-                <button className="w-fit h-fit py-1 px-2 rounded-2xl border border-red-500">
-                  Apply Later
-                </button>
-              </div>
+            </div>
+            <div className="w-full flex items-center justify-between mt-3">
+              <button
+                className="w-fit py-1 px-2 rounded-2xl bg-red-500"
+                onClick={() => handleJobLink(job.public_url)}
+              >
+                Apply Now
+              </button>
+              <button className="w-fit h-fit py-1 px-2 rounded-2xl border border-red-500">
+                Apply Later
+              </button>
             </div>
           </div>
         ))}

@@ -9,6 +9,8 @@ import { store } from "./store/store.js";
 import { ToastContainer } from "react-toastify";
 // index.js or App.js
 import "react-toastify/dist/ReactToastify.css";
+import { element } from "prop-types";
+import SearchPeople from "./Pages/searchPeople/SearchPeople.jsx";
 
 // Lazy load components
 const App = lazy(() => import("./App.jsx"));
@@ -20,6 +22,8 @@ const Login = lazy(() => import("./Pages/LoginPage.jsx"));
 const SignupPage = lazy(() => import("./Pages/SignupPage.jsx"));
 const UserProfilePage = lazy(() => import("./Pages/UserProfilePage.jsx"));
 const AboutUsPage = lazy(() => import("./Pages/AboutUsPage.jsx"));
+const ChatsPage = lazy(() => import("./Pages/chatspage/chatspage.jsx"));
+const PostAJobPage = lazy(() => import("./Pages/PostAJob/postjobPage.jsx"));
 const UserInfoForm = lazy(() =>
   import("./Pages/UserInfoFormPage/UserInfoForm.jsx")
 );
@@ -34,6 +38,8 @@ const routes = [
       { path: "/", element: <App /> },
       { path: "find-a-job", element: <FindAJobPage /> },
       { path: "/about", element: <AboutUsPage /> },
+      { path: "/searchPeople", element: <SearchPeople /> },
+      { path: "/postAJob", element: <PostAJobPage /> },
     ],
   },
   { path: "/login", element: <Login /> },
@@ -41,6 +47,7 @@ const routes = [
   { path: "/profile", element: <UserProfilePage /> },
   { path: "/UserInfoFormData", element: <UserInfoForm /> },
   { path: "/blog", element: <BlogPage /> },
+  { path: "/chats", element: <ChatsPage /> },
 ];
 
 // Create router

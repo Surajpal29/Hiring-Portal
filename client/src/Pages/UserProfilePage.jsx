@@ -1,16 +1,25 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import userImg from "../assets/loginPageImage.png";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Defaultimage from "/images/images.png";
+
+// importing icons
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import XIcon from "@mui/icons-material/X";
+import Linkdin from "@mui/icons-material/LinkedIn";
+import Instagram from "@mui/icons-material/Instagram";
 import MessageIcon from "@mui/icons-material/Message";
 import ShareIcon from "@mui/icons-material/Share";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import { useSelector } from "react-redux";
 
 const UserProfilePage = () => {
   const userData = useSelector((state) => state.userData);
+  const navigate = useNavigate();
+  const profilepicImage =
+    userData && userData[1] && userData[1].userinfodata.profilepic
+      ? `${userData[1].userinfodata.profilepic}`
+      : Defaultimage;
   console.log(" this is from profile page ", userData);
   const skillData = ["web Developer", "html", "CSS", "React", "Next.js"];
   const profileFeatureLinks = [
@@ -23,17 +32,26 @@ const UserProfilePage = () => {
   const [profileFeatureLinksElement, setprofileFeatureLinksElement] = useState(
     profileFeatureLinks[0]
   );
+
+  const handleClickOnMessage = () => {
+    navigate("/chats");
+  };
+
   return (
     <>
       <div className="w-full   pl-20 flex items-center justify-center ">
         <div className="w-[94%] h-[100vh]  py-10 flex   ">
-          <NavLink to="/find-a-job">
+          <NavLink to="/">
             <KeyboardBackspaceIcon />
           </NavLink>
           {/* left porfile image div */}
           <div className="w-[45vw]   flex flex-col items-center justify-center ">
-            <div className="w-[15rem] h-[15rem] bg-yellow-300 rounded-full flex items-center justify-center">
-              <img src={userImg} alt="this is user umage" />
+            <div className="w-[15rem] h-[15rem] bg-yellow-300 border border-black rounded-full overflow-hidden flex items-center justify-center">
+              <img
+                src={profilepicImage}
+                alt="this is user image"
+                className="w-full h-full object-cover "
+              />
             </div>
             <div className="w-56 h-10 flex items-center justify-center bg-blue-400 rounded-full my-[-2rem] mb-[2rem]">
               Looking for work
@@ -53,22 +71,24 @@ const UserProfilePage = () => {
               <span> </span>
               {userData[1].userinfodata.lastName}
               {/* Check if userData exists before accessing userName */}
-              <sup>
+              <sup className="text-blue-500">
                 <VerifiedOutlinedIcon />
               </sup>
             </h1>
             <div className="flex gap-3">
-              <span className="w-10 h-10 rounded-full flex items-center justify-center border-2">
+              <span className="w-10 text-blue-600 h-10 rounded-full flex items-center justify-center border-2 border-x-gray-500 hover:border-y-gray-500 hover:border-x-0 hover:z-10 hover:scale-105">
+                <Linkdin />
+              </span>
+              <span className="w-10 h-10 text-red-500 rounded-full flex items-center justify-center border-2 border-x-gray-500 hover:border-y-gray-500 hover:border-x-0 hover:z-10 hover:scale-105">
+                <Instagram />
+              </span>
+              <span className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-x-gray-500 hover:border-y-gray-500 hover:border-x-0 hover:z-10 hover:scale-105">
                 <XIcon />
               </span>
-              <span className="w-10 h-10 rounded-full flex items-center justify-center border-2">
-                <XIcon />
-              </span>
-              <span className="w-10 h-10 rounded-full flex items-center justify-center border-2">
-                <XIcon />
-              </span>
-              <button className="w-fit h-fit px-3 py-1 border rounded-2xl">
-                {" "}
+              <button
+                onClick={handleClickOnMessage}
+                className="w-fit h-fit px-3 py-1 border rounded-2xl"
+              >
                 <MessageIcon /> Message
               </button>
               <button className="w-fit h-fit px-3 py-1 border rounded-2xl">
@@ -94,7 +114,7 @@ const UserProfilePage = () => {
               {userData[1].userinfodata.skills.map((skill, index) => (
                 <span
                   key={index}
-                  className="w-fit h-fit px-3 py-1  border rounded-2xl"
+                  className="w-fit h-fit px-3 py-1 cursor-pointer hover:shadow-sm hover:z-10 hover:scale-105  border rounded-2xl"
                 >
                   {skill}
                 </span>

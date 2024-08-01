@@ -7,6 +7,7 @@ import BrowseByCategory from "./Pages/BrowseByCategory";
 import ForClientPage from "./Pages/ForClientPage";
 import HomePage from "./Pages/HomePage";
 import JobOppurtunity from "./Pages/JobOppurtunity";
+
 import { store } from "./store/store";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <JobOppurtunity />
       <BrowseByCategory />
       <ForClientPage />
+
       {/* <FooterSection /> */}
     </Provider>
   );

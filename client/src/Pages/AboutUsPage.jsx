@@ -31,25 +31,25 @@ const AboutUsPage = () => {
         <h6 className="text-2xl text-gray-600 bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">
           WE <span className="text-red-700">❤️</span> WHAT WE DO.
         </h6>
-        <h6 className="  text-4xl flex justify-center items-center font-bold pt-10">
+        <h6 className="text-md md:text-4xl flex justify-center items-center font-bold pt-10">
           Our talented teams craft the best <br /> code and design amazing user{" "}
           <br />
           experiences or our clients.
         </h6>
       </div>
-      <div className="bg-cyan-200 w-[95vw]  h-96 overflow-hidden rounded-tl-full rounded-bl-[70vw] mx-5 mt-10 border-b-black border-b-8">
-        <img src={bluebg} alt="" className="w-full" />
+      <div className="bg-cyan-200 md:w-[95vw]   md:h-96 overflow-hidden md:rounded-tl-full md:rounded-bl-[70vw] mx-5 mt-10 border-b-black border-b-8">
+        <img src={bluebg} alt="" className="w-full h-full object-cover" />
       </div>
-      <hr className="mt-1 h-2 bg-black w-[92.7vw] mx-14" />
+      <hr className="mt-1  h-2 bg-black  md:w-[92.7vw] mx-14" />
       <div className="flex flex-col items-center justify-center mt-10">
-        <h4 className="text-4xl font-bold">
+        <h4 className="sm:text-sm md:text-4xl font-bold">
           A nearshore experience like <br /> you'vd never had before.
         </h4>
-        <p className="text-gray-600 mt-10 text-xl">
+        <p className="text-gray-600 mt-10 text-sm  md:text-xl">
           We are professional transparent team with 2 years of experience
           building team and connections.
         </p>
-        <p className="px-10 pt-10 text-gray-600">
+        <p className="px-10 pt-10 text-gray-600 text-sm">
           Welcome to Job Nest, where opportunities take flight! We are dedicated
           to revolutionizing the way job seekers connect with employers, making
           the process simple, efficient, and enjoyable. At Job Nest, we

@@ -5,8 +5,22 @@ import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import employeeImage from "../assets/employeeImage.png";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ForClientPage = () => {
+  const navigate = useNavigate();
+  const userData = useSelector((state) => state.userData);
+
+  const handleclickonjobpost = () => {
+    if (userData[1]) {
+      console.log(userData);
+      navigate("/postAJob");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <div className="w-full px-6 py-2 mt-5">
       <p className="sm:text-center lg:text-start px-10">For Client.</p>
@@ -32,19 +46,23 @@ const ForClientPage = () => {
             <div className="w-12 h-12 rounded-full border flex items-center justify-center">
               <PostAddIcon />
             </div>
-            <div>
-              <h5 className="text-xl font-bold">Post a Job</h5>
-              <p className="text-gray-500">To post a job click hire...</p>
-            </div>
+            <button to="" onClick={handleclickonjobpost}>
+              <div className="flex flex-col items-center justify-start">
+                <h5 className="text-xl font-bold">Post a Job</h5>
+                <p className="text-gray-500">To post a job click hire...</p>
+              </div>
+            </button>
           </div>
           <div className="w-full border rounded-xl flex items-center gap-5 px-5 py-3 mt-5 hover:scale-105 transition ease-in-out duration-300 shadow-lg">
             <div className="w-12 h-12 rounded-full border flex items-center justify-center">
               <TravelExploreIcon />
             </div>
-            <div>
-              <h5 className="text-xl font-bold">Hire a Talent for work</h5>
-              <p className="text-gray-500">To hire click hire...</p>
-            </div>
+            <Link to="/searchPeople">
+              <div>
+                <h5 className="text-xl font-bold">Hire a Talent for work</h5>
+                <p className="text-gray-500">To hire click hire...</p>
+              </div>
+            </Link>
           </div>
         </div>
         {/* right side div */}

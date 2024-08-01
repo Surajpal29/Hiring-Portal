@@ -80,9 +80,9 @@ const BrowseByCategory = () => {
       <hr className="text-gray-600 mt-2 mx-10 mb-5" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ps-10 mr-10">
-        {CategoryData.map((category, index) => (
+        {CategoryData.map((category) => (
           <div
-            key={index}
+            key={category.id}
             className="w-full h-[6rem] flex items-center justify-between rounded-xl bg-white shadow-xl px-7 py-3 hover:scale-105 transition ease-in-out duration-300"
           >
             <div>
@@ -95,9 +95,7 @@ const BrowseByCategory = () => {
                 <h6>{category.totalSkillCnt} skills</h6>
               </div>
             </div>
-            <div>
-              <DeveloperModeIcon />
-            </div>
+            <div>{category.skillIcon}</div>
           </div>
         ))}
       </div>
