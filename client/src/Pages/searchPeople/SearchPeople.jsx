@@ -127,54 +127,58 @@ const SearchPeople = () => {
       </div>
       {/* lower div */}
       <div className="flex gap-2 max-h-[76%] ">
-        <div className="w-[30%]  border border-gray-200 overflow-y-auto no-scrollbar bg-blue-50 rounded-lg">
+        <div className="w-[30%]  border border-gray-400 overflow-y-auto no-scrollbar bg-blue-50 rounded-lg">
           {(filteredUsers.length ? filteredUsers : userlist).map((user) => (
-            <button
-              onClick={() => handleselectuser(user)}
-              key={user.id}
-              className="w-[100%] flex items-center justify-center"
-            >
-              <div className="flex w-[100%] px-5 py-3 gap-2 items-center justify-around">
-                <span className="w-14 h-14 border border-black capitalize font-bold text-xl rounded-full flex items-center justify-center">
-                  {user && user.profilepic ? (
-                    <img
-                      src={user.profilepic}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <h5 className="text-3xl ">{user && user.firstName[0]}</h5>
-                  )}
-                </span>
-                <span>
-                  <h5 className="text-m font-semibold capitalize">
-                    {user.firstName + " " + (user.lastName || "No username")}
-                  </h5>
-                  <p className="text-sm text-gray-600">
-                    {user.skills
-                      ? user.skills.slice(0, 2).join(", ")
-                      : "No skills"}
-                  </p>
-                </span>
-                <span className="flex flex-col text-sm text-gray-600 items-center justify-center">
-                  <h6>experience</h6>
-                  <p>
-                    {user.experience
-                      ? user.experience === "No"
-                        ? "No experience"
-                        : `${user.experience}+`
-                      : "No experience"}
-                  </p>
-                </span>
-              </div>
-            </button>
+            <>
+              <button
+                onClick={() => handleselectuser(user)}
+                key={user.id}
+                className="w-[100%] flex items-center justify-center"
+              >
+                <div className="flex w-[100%] px-5 py-3 gap-2 items-center justify-around">
+                  <span className="w-14 h-14 border border-black capitalize font-bold overflow-hidden text-xl rounded-full flex items-center justify-center">
+                    {user && user.profilepic ? (
+                      <img
+                        src={user.profilepic}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <h5 className="text-3xl ">{user && user.firstName[0]}</h5>
+                    )}
+                  </span>
+                  <span>
+                    <h5 className="text-m font-semibold capitalize">
+                      {user.firstName + " " + (user.lastName || "No username")}
+                    </h5>
+                    <p className="text-sm text-gray-600">
+                      {user.skills
+                        ? user.skills.slice(0, 2).join(", ")
+                        : "No skills"}
+                    </p>
+                  </span>
+                  <span className="flex flex-col text-sm text-gray-600 items-center justify-center">
+                    <h6>experience</h6>
+                    <p>
+                      {user.experience
+                        ? user.experience === "No"
+                          ? "No experience"
+                          : `${user.experience}+`
+                        : "No experience"}
+                    </p>
+                  </span>
+                </div>
+              </button>
+              <hr className="bg-black h-[1.2px] w-full" />
+            </>
           ))}
+          <hr className="bg-black h-[1.2px] w-full" />
         </div>
         {/* lower right div */}
         <div className="w-[70%] border border-gray-200 rounded-lg bg-blue-50 p-5">
           <div className="flex gap-10">
             <div className="flex flex-col gap-3 items-center justify-center">
-              <div className="w-[17vw] h-[17vw] flex items-center justify-center border border-black rounded-full shadow-md  shadow-blue-700">
+              <div className="w-[17vw] h-[17vw] flex items-center justify-center border overflow-hidden border-black rounded-full shadow-md  shadow-blue-700">
                 {viewUser && viewUser.profilepic ? (
                   <img
                     src={viewUser.profilepic}
