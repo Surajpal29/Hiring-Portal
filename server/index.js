@@ -7,20 +7,16 @@ import { UserRoute } from "./Routes/user.route.js";
 import { ApiData } from "./Controlers/jobApi.controlers.js";
 import { jobs } from "./Routes/savedByUser.route.js";
 import { message } from "./Routes/Message.route.js";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const app = express();
 
 // middleware
 app.use(express.json());
+app.use(cors());
 app.use(bodyParser.json());
-app.use(
-  cors({
-    origin: [
-      "https://deploy-mernhttps://hiring-portal-git-main-surajs-projects-5add2d15.vercel.app/",
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true,
-  })
-);
 
 // Routes
 app.use("/user", UserRoute);
