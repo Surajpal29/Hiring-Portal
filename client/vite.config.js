@@ -7,4 +7,7 @@ export default defineConfig({
     proxy: "http://localhost:8000",
   },
   plugins: [react()],
+  build: {
+    outDir: "dist", // Ensure this is set to 'dist'
+  },
 });
