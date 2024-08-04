@@ -9,6 +9,7 @@ import uploadmul from "../Utils/multerConfig.js";
 import path from "path";
 import fs from "fs";
 import jobpost from "../Models/jobpost.model.js";
+import { error } from "console";
 
 dotenv.config();
 
@@ -19,29 +20,33 @@ app.use(express.json());
 const UserRoute = Router();
 
 // Register route
-// Register route
 UserRoute.post("/register", async (req, res) => {
   try {
     const { userName, email, phoneNumber, password } = req.body;
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10); // This line is causing the error
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
-    const newUser = new User({
+    const newUser = await User.create({
       userName,
       email,
       phoneNumber,
       password: hashedPassword,
     });
 
-    // Save the user to the database
-    await newUser.save();
-    console.log("user created", newUser);
-    res.status(201).json(newUser).send("new user created");
+    // Check if the user was created
+    if (newUser) {
+      console.log("user created", newUser);
+      return res.status(201).json({ newUser, success: true });
+    } else {
+      return res
+        .status(400)
+        .json({ success: false, message: "Failed to create new user" });
+    }
   } catch (error) {
     console.error("Error during registration:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -182,22 +187,17 @@ UserRoute.post(
       } = req.body;
 
       let profilepic = null;
-
-      // Handle profile picture upload if available
       if (req.file) {
         const ext = path.extname(req.file.originalname);
         const newFilename = `${req.file.filename}${ext}`;
         const oldPath = path.join(req.file.destination, req.file.filename);
         const newPath = path.join(req.file.destination, newFilename);
-
-        fs.renameSync(oldPath, newPath); // Rename the file with correct extension
-
+        await fs.promises.rename(oldPath, newPath);
         profilepic = `/images/${newFilename}`;
       }
 
-      // Parse JSON strings to arrays
-      const parsedSkills = JSON.parse(skills);
-      const parsedDomainOfInterest = JSON.parse(DomainOfInterest);
+      const parsedSkills = JSON.parse(skills || "[]");
+      const parsedDomainOfInterest = JSON.parse(DomainOfInterest || "[]");
 
       const userInfo = new UserInfo({
         firstName,
@@ -209,26 +209,29 @@ UserRoute.post(
         city,
         country,
         HighestQualification,
-        skills: parsedSkills, // Use parsed array
+        skills: parsedSkills,
         experience,
-        DomainOfInterest: parsedDomainOfInterest, // Use parsed array
+        DomainOfInterest: parsedDomainOfInterest,
         jobType,
         Resume,
         profilepic,
       });
 
       await userInfo.save();
-
-      res.status(200).json({ message: "User info saved successfully" });
+      return res
+        .status(200)
+        .json({ success: true, message: "User info saved successfully" });
     } catch (error) {
-      console.error(error);
-
+      console.error("Error saving user info:", error);
       if (!res.headersSent) {
-        res.status(500).json({ message: "Error saving user info" });
+        return res
+          .status(500)
+          .json({ success: false, message: "Error saving user info" });
       }
     }
   }
 );
+
 UserRoute.post("/jobpost", uploadmul.single("profilepic"), async (req, res) => {
   try {
     console.log("Request body:", req.body); // Log the incoming request body

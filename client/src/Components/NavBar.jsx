@@ -15,7 +15,10 @@ const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const profilepicImage =
-    userData && userData[1] && userData[1].userinfodata.profilepic
+    userData &&
+    userData[1] &&
+    userData[1].userinfodata &&
+    userData[1].userinfodata.profilepic
       ? `${userData[1].userinfodata.profilepic}`
       : Defaultimage;
 
@@ -28,9 +31,9 @@ const NavBar = () => {
     loggedInUser && loggedInUser[1]?.message === "Login successful";
 
   return (
-    <div className="w-full  sm:h-10 md:h-20 sm:overflow-hidden bg-cyan-10 flex items-center justify-between px-6 md:px-20 font-bold relative z-10">
-      <div className="flex items-center justify-between w-full ">
-        <div className=" md:w-[10rem]   h-[7rem]  overflow-hidden bg-white flex items-center justify-center">
+    <div className="w-full sm:h-10 md:h-20 sm:overflow-hidden bg-cyan-10 flex items-center justify-between px-6 md:px-20 font-bold relative z-10">
+      <div className="flex items-center justify-between w-full">
+        <div className="md:w-[10rem] h-[7rem] overflow-hidden bg-white flex items-center justify-center">
           <img
             src={Logo}
             alt="Jobnest Logo"

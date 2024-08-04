@@ -34,7 +34,7 @@ message.get("/messages", async (req, res) => {
 message.get("/allusers", async (req, res) => {
   try {
     const userList = await UserInfo.find();
-    res.status(200).json(userList);
+    res.status(200).json({ success: true, userList });
   } catch (error) {
     console.error("Error retrieving users:", error);
     res.status(500).send("Error retrieving users");

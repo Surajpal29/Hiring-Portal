@@ -35,14 +35,21 @@ const ChatsPage = () => {
     userData[1] && userData[1].userinfodata
       ? `${userData[1].userinfodata.firstName} ${userData[1].userinfodata.lastName}`
       : "";
-  // console.log(currentUser);
+
   useEffect(() => {
     const fetchUserList = async () => {
       try {
         const response = await axios.get(
           "http://localhost:8000/userchats/allusers"
         );
-        setChatUserList(response.data);
+        // Check if the response data is an array
+        console.log(response.data.userList);
+
+        if (Array.isArray(response.data.userList)) {
+          setChatUserList(response.data.userList);
+        } else {
+          console.error("Expected an array but received:", response.data);
+        }
       } catch (error) {
         console.error("Error fetching user list", error);
       }
@@ -118,6 +125,7 @@ const ChatsPage = () => {
   };
 
   console.log(chatUser);
+  // console.log(chatuserlist.success);
 
   return (
     <div className={``}>
@@ -185,46 +193,47 @@ const ChatsPage = () => {
         <div className="flex gap-3 mt-3">
           {/* lower left div */}
           <div className="w-[30vw] h-[77vh] p-5 border-2 border-black  gap-3 rounded-lg overflow-y-auto no-scrollbar ">
-            {chatuserlist.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => selectedUserForChat(item)}
-                className="w-full"
-              >
-                <div>
-                  <div className="flex gap-3  items-center justify-between">
-                    <div className="flex gap-3">
-                      <span className="w-12 h-12 border border-black rounded-full bg-blue-400 flex items-center justify-center">
-                        {chatUser && chatUser.profilepic ? (
-                          <img
-                            src={chatUser.profilepic}
-                            alt="Profile"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <h5 className="text-3xl ">
-                            {chatUser && chatUser.firstName[0]}
-                          </h5>
-                        )}
-                      </span>
-                      <div>
-                        <h3 className="capitalize font-semibold text-lg">
-                          {item.firstName + " " + item.lastName}
-                        </h3>
-                        <p className="text-gray-700">message..........</p>
+            {Array.isArray(chatuserlist) &&
+              chatuserlist.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => selectedUserForChat(item)}
+                  className="w-full"
+                >
+                  <div>
+                    <div className="flex gap-3  items-center justify-between">
+                      <div className="flex gap-3">
+                        <span className="w-12 h-12 border border-black rounded-full bg-blue-400 flex items-center justify-center">
+                          {chatUser && chatUser.profilepic ? (
+                            <img
+                              src={chatUser.profilepic}
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <h5 className="text-3xl ">
+                              {chatUser && chatUser.firstName[0]}
+                            </h5>
+                          )}
+                        </span>
+                        <div>
+                          <h3 className="capitalize font-semibold text-lg">
+                            {item.firstName + " " + item.lastName}
+                          </h3>
+                          <p className="text-gray-700">message..........</p>
+                        </div>
+                      </div>
+                      <div className="flex-col items-center justify-end">
+                        <h6 className="">13:56 pm</h6>
+                        <span className="w-4 h-4 p-1 rounded-full flex items-center justify-center border bg-red-500">
+                          1
+                        </span>
                       </div>
                     </div>
-                    <div className="flex-col items-center justify-end">
-                      <h6 className="">13:56 pm</h6>
-                      <span className="w-4 h-4 p-1 rounded-full flex items-center justify-center border bg-red-500">
-                        1
-                      </span>
-                    </div>
+                    <hr className="w-[100%] h-[5%] bg-black rounded-full my-2" />
                   </div>
-                  <hr className="w-[100%] h-[5%] bg-black rounded-full my-2" />
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
           </div>
           {/* lower right div */}
           <div

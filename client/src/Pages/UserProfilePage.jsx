@@ -16,11 +16,15 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 const UserProfilePage = () => {
   const userData = useSelector((state) => state.userData);
   const navigate = useNavigate();
-  const profilepicImage =
-    userData && userData[1] && userData[1].userinfodata.profilepic
-      ? `${userData[1].userinfodata.profilepic}`
-      : Defaultimage;
+
+  // Ensure userData[1] and userData[1].userinfodata are defined
+  const userInfo = userData[1]?.userinfodata || {};
+  const profilepicImage = userInfo.profilepic
+    ? `${userInfo.profilepic}`
+    : Defaultimage;
+
   console.log(" this is from profile page ", userData);
+
   const skillData = ["web Developer", "html", "CSS", "React", "Next.js"];
   const profileFeatureLinks = [
     "Skills",
@@ -39,17 +43,17 @@ const UserProfilePage = () => {
 
   return (
     <>
-      <div className="w-full   pl-20 flex items-center justify-center ">
-        <div className="w-[94%] h-[100vh]  py-10 flex   ">
+      <div className="w-full pl-20 flex items-center justify-center ">
+        <div className="w-[94%] h-[100vh] py-10 flex ">
           <NavLink to="/">
             <KeyboardBackspaceIcon />
           </NavLink>
-          {/* left porfile image div */}
-          <div className="w-[45vw]   flex flex-col items-center justify-center ">
+          {/* left profile image div */}
+          <div className="w-[45vw] flex flex-col items-center justify-center ">
             <div className="w-[15rem] h-[15rem] bg-yellow-300 border border-black rounded-full overflow-hidden flex items-center justify-center">
               <img
                 src={profilepicImage}
-                alt="this is user image"
+                alt="User profile"
                 className="w-full h-full object-cover "
               />
             </div>
@@ -59,18 +63,15 @@ const UserProfilePage = () => {
             <div>
               <LocationOnOutlinedIcon />
               <span>
-                {userData[1].userinfodata.city},{" "}
-                {userData[1].userinfodata.country}
+                {userInfo.city}, {userInfo.country}
               </span>
             </div>
           </div>
-          {/* /profile right top div */}
-          <div className="w-[30%]  h-30 flex flex-col gap-y-3 items-start justify-center">
+          {/* profile right top div */}
+          <div className="w-[30%] h-30 flex flex-col gap-y-3 items-start justify-center">
             <h1 className="font-bold text-4xl">
-              {userData[1].userinfodata.firstName}
-              <span> </span>
-              {userData[1].userinfodata.lastName}
-              {/* Check if userData exists before accessing userName */}
+              {userInfo.firstName} <span>{userInfo.lastName}</span>
+              {/* Check if userInfo exists before accessing userName */}
               <sup className="text-blue-500">
                 <VerifiedOutlinedIcon />
               </sup>
@@ -99,32 +100,38 @@ const UserProfilePage = () => {
               <div>
                 <h6 className="text-sm">Role</h6>
                 <h5 className="text-lg font-semibold">
-                  {userData[1].userinfodata.DomainOfInterest[0]}
+                  {userInfo.DomainOfInterest
+                    ? userInfo.DomainOfInterest[0]
+                    : "N/A"}
                 </h5>
               </div>
               <div>
                 <h6 className="text-sm">Experience</h6>
                 <h5 className="text-lg font-semibold">
-                  {userData[1].userinfodata.experience}
+                  {userInfo.experience || "N/A"}
                 </h5>
               </div>
             </div>
             <h5 className="">My Skills</h5>
             <div className="w-[60vw] flex gap-3">
-              {userData[1].userinfodata.skills.map((skill, index) => (
-                <span
-                  key={index}
-                  className="w-fit h-fit px-3 py-1 cursor-pointer hover:shadow-sm hover:z-10 hover:scale-105  border rounded-2xl"
-                >
-                  {skill}
-                </span>
-              ))}
+              {userInfo.skills && userInfo.skills.length > 0 ? (
+                userInfo.skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="w-fit h-fit px-3 py-1 cursor-pointer hover:shadow-sm hover:z-10 hover:scale-105 border rounded-2xl"
+                  >
+                    {skill}
+                  </span>
+                ))
+              ) : (
+                <span>No skills available</span>
+              )}
             </div>
           </div>
         </div>
       </div>
       {/* center div which shows the list of features which we have to show in the profile page */}
-      {/* <div className=" w-full  bg-cyan-400 flex items-center justify-center text-xl py-5">
+      {/* <div className=" w-full bg-cyan-400 flex items-center justify-center text-xl py-5">
         <ul className="flex gap-4">
           {profileFeatureLinks.map((feature, index) => (
             <li
@@ -137,13 +144,13 @@ const UserProfilePage = () => {
           ))}
         </ul>
       </div> */}
-      {/* <div className="w-full flex  bg-red-400 ">
+      {/* <div className="w-full flex bg-red-400 ">
         <div className="w-[30vw] p-[5vw] h-64 bg-green-900">
           <h3 className="text-3xl">{profileFeatureLinksElement}</h3>
         </div>
         <div className="bg-blue-400 w-[70vw] h-64 p-10">
           {profileFeatureLinksElement === "Skills" &&
-            userData[1].userinfodata.skills.map((item, index) => (
+            userInfo.skills.map((item, index) => (
               <span key={index} className="p-5 uppercase">
                 {item}
               </span>

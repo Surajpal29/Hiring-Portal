@@ -17,21 +17,27 @@ import Defaultimage from "/images/images.png";
 const FindAJobPage = () => {
   const userData = useSelector((state) => state.userData);
   const profilepicImage =
-    userData && userData[1] && userData[1].userinfodata.profilepic
+    userData && userData[1] && userData[1].userinfodata?.profilepic
       ? `${userData[1].userinfodata.profilepic}`
       : Defaultimage;
 
   const navigate = useNavigate();
   const id = useId();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await axios.get("http://localhost:8000/api/data");
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setError("Failed to fetch job data. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -45,8 +51,7 @@ const FindAJobPage = () => {
     }
   };
 
-  const notify = () => toast.info("please login to apply for the job!");
-  const errornotify = () => toast.info("please login!....");
+  const notify = () => toast.info("Please login to apply for the job!");
 
   return (
     <>
@@ -77,13 +82,13 @@ const FindAJobPage = () => {
                 className="md:text-xl px-4 py-1 rounded-xl border border-black"
               />
               <button className="text-xl px-4 py-1 rounded-xl font-bold bg-blue-500">
-                search
+                Search
               </button>
             </div>
           </div>
         </div>
         {/* top right profile */}
-        {userData && userData[1] && (
+        {userData && userData[1] && userData[1].userinfodata && (
           <div className="w-[20vw] h-[22vh] bg-purple-500 rounded-lg relative hidden md:flex items-center justify-center">
             <div className="w-[5vw] h-[5vw] rounded-full bg-cyan-300 absolute top-[-20%] left-[35%] border-4 border-white">
               <CheckCircleIcon className="text-blue-800 absolute right-0" />
@@ -101,7 +106,7 @@ const FindAJobPage = () => {
                 {userData[1].userinfodata.lastName}
               </h4>
               <h6 className="mb-2 flex gap-1">
-                {userData[1].userinfodata.skills.map((item, index) => (
+                {userData[1].userinfodata.skills?.map((item, index) => (
                   <span key={index}>{item}</span>
                 ))}
               </h6>
@@ -116,76 +121,82 @@ const FindAJobPage = () => {
         {/* bottom left div */}
         <div className="w-[94vw] border my-5 pt-5 pl-1 md:pl-10 md:ml-10 ml-1 rounded-lg">
           <h4 className="font-bold text-2xl mb-3">Recommended Jobs</h4>
-          {/* card */}
-          <div className="w-full  flex gap-1 flex-wrap items-center justify-center">
-            {data.slice(0, 15).map((data, index) => (
-              <div
-                key={index}
-                className="min-w-[10vw] max-w-[80.5vw] sm:h-96 lg:h-72 lg:w-[17.5vw] bg-cyan-100 border-2 rounded-lg overflow-hidden pt-3 pl-3 relative flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-full h-[4vw] flex items-center justify-between gap-1">
-                    {data.organization.logo_url && (
-                      <div className="w-[4vw] h-[4vw] bg-purple-400 rounded-lg overflow-hidden">
-                        <img
-                          src={data.organization.logo_url}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <div className="w-full flex gap-1 flex-wrap items-center justify-center">
+              {data.slice(0, 15).map((job, index) => (
+                <div
+                  key={index}
+                  className="min-w-[10vw] max-w-[80.5vw] sm:h-96 lg:h-72 lg:w-[17.5vw] bg-cyan-100 border-2 rounded-lg overflow-hidden pt-3 pl-3 relative flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="w-full h-[4vw] flex items-center justify-between gap-1">
+                      {job.organization.logo_url && (
+                        <div className="w-[4vw] h-[4vw] bg-purple-400 rounded-lg overflow-hidden">
+                          <img
+                            src={job.organization.logo_url}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div>
+                        <h5 className="text-sm font-bold">{job.title}</h5>
+                        <h6 className="text-xs">{job.organization.name}</h6>
                       </div>
-                    )}
-                    <div>
-                      <h5 className="text-sm font-bold">{data.title}</h5>
-                      <h6 className="text-xs">{data.organization.name}</h6>
+                      <div className="lg:w-[3vw] h-[1.7vw] sm:w-fit sm:h-fit lg:flex items-center justify-center rounded-s-lg bg-yellow-600">
+                        <BookmarkBorderIcon />
+                      </div>
                     </div>
-                    <div className="lg:w-[3vw] h-[1.7vw] sm:w-fit sm:h-fit lg:flex items-center justify-center rounded-s-lg bg-yellow-600">
-                      <BookmarkBorderIcon />
-                    </div>
-                  </div>
-                  <div className="w-full my-3 pr-3 grid grid-cols-2 items-start">
-                    <div className="w-[100%] gap-y-2 flex flex-col items-start">
-                      <span className="flex gap-2 text-xs items-center justify-center">
-                        <BusinessCenterOutlinedIcon /> <p>Full Time</p>
-                      </span>
-                      <span className="flex gap-2 text-xs items-center justify-center">
-                        <WorkHistoryOutlinedIcon />{" "}
-                        <p>
-                          {data.min_experience}
-                          <sup>+</sup> year
-                        </p>
-                      </span>
-                      <span className="flex gap-2 text-xs items-center justify-center">
-                        <CurrencyRupeeOutlinedIcon />{" "}
-                        <p>{data.salary_detail}</p>
-                      </span>
-                    </div>
-                    <div className="w-[100%] flex gap-y-2 flex-col items-start">
-                      <span className="flex gap-2 text-xs items-center justify-center">
-                        <CalendarMonthOutlinedIcon /> <p>{data.last_updated}</p>
-                      </span>
-                      <span className="flex gap-2 items-center justify-center text-xs">
-                        <LocationOnOutlinedIcon /> <p>{data.address.line_1}</p>
-                      </span>
-                      <span className="flex gap-2 text-xs items-center justify-center">
-                        <GroupIcon /> <p>{data.no_of_openings}</p>
-                      </span>
+                    <div className="w-full my-3 pr-3 grid grid-cols-2 items-start">
+                      <div className="w-[100%] gap-y-2 flex flex-col items-start">
+                        <span className="flex gap-2 text-xs items-center justify-center">
+                          <BusinessCenterOutlinedIcon /> <p>Full Time</p>
+                        </span>
+                        <span className="flex gap-2 text-xs items-center justify-center">
+                          <WorkHistoryOutlinedIcon />{" "}
+                          <p>
+                            {job.min_experience}
+                            <sup>+</sup> year
+                          </p>
+                        </span>
+                        <span className="flex gap-2 text-xs items-center justify-center">
+                          <CurrencyRupeeOutlinedIcon />{" "}
+                          <p>{job.salary_detail}</p>
+                        </span>
+                      </div>
+                      <div className="w-[100%] flex gap-y-2 flex-col items-start">
+                        <span className="flex gap-2 text-xs items-center justify-center">
+                          <CalendarMonthOutlinedIcon />{" "}
+                          <p>{job.last_updated}</p>
+                        </span>
+                        <span className="flex gap-2 items-center justify-center text-xs">
+                          <LocationOnOutlinedIcon /> <p>{job.address.line_1}</p>
+                        </span>
+                        <span className="flex gap-2 text-xs items-center justify-center">
+                          <GroupIcon /> <p>{job.no_of_openings}</p>
+                        </span>
+                      </div>
                     </div>
                   </div>
+                  <div className="w-full mt-3 flex flex-col lg:flex-row lg:justify-between px-3 lg:absolute lg:bottom-3">
+                    <button
+                      className="w-full lg:w-fit py-1 px-2 mb-2 lg:mb-0 rounded-2xl bg-red-500"
+                      onClick={() => handleJobLink(job.public_url)}
+                    >
+                      Apply Now
+                    </button>
+                    <button className="w-full lg:w-fit h-fit py-1 px-2 rounded-2xl border border-red-500">
+                      Apply Later
+                    </button>
+                  </div>
                 </div>
-                <div className="w-full mt-3 flex flex-col lg:flex-row lg:justify-between px-3 lg:absolute lg:bottom-3">
-                  <button
-                    className="w-full lg:w-fit py-1 px-2 mb-2 lg:mb-0 rounded-2xl bg-red-500"
-                    onClick={() => handleJobLink(data.public_url)}
-                  >
-                    Apply Now
-                  </button>
-                  <button className="w-full lg:w-fit h-fit py-1 px-2 rounded-2xl border border-red-500">
-                    Apply Later
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </>
