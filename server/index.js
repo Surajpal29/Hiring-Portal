@@ -25,5 +25,9 @@ app.use("/job", jobs);
 app.use("/userchats", message);
 
 connectDB().then(() => {
-  app.listen(8000, () => console.log("listening on port"));
+  app.listen(process.env.PORT, () =>
+    console.log(`listening on port ${process.env.PORT}`)
+  );
 });
+
+export default app;
