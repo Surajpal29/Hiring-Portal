@@ -9,6 +9,8 @@ import { jobs } from "./Routes/savedByUser.route.js";
 import { message } from "./Routes/Message.route.js";
 import dotenv from "dotenv";
 
+const port = process.env.PORT || 3000;
+
 dotenv.config();
 
 const app = express();
@@ -29,9 +31,7 @@ app.get("/", (req, res) => {
 });
 
 connectDB().then(() => {
-  app.listen(process.env.PORT, () =>
-    console.log(`listening on port ${process.env.PORT}`)
-  );
+  app.listen(port, () => console.log(`listening on port ${port}`));
 });
 
 export default app;
