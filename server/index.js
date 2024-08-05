@@ -24,6 +24,10 @@ app.use("/api", ApiData);
 app.use("/job", jobs);
 app.use("/userchats", message);
 
+app.use("/", (req, res) => {
+  res.send("Welcome!");
+});
+
 connectDB().then(() => {
   app.listen(process.env.PORT, () =>
     console.log(`listening on port ${process.env.PORT}`)
