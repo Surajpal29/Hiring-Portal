@@ -31,8 +31,16 @@ const FindAJobPage = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/data");
-        setData(response.data);
+        const response = await axios.get(
+          "https://hiring-portal-virid.vercel.app/api/data"
+        );
+        console.log("Fetched data:", response.data); // Log the response data
+        if (Array.isArray(response.data)) {
+          setData(response.data);
+        } else {
+          console.error("Data is not an array:", response.data);
+          setError("Unexpected data format. Please try again later.");
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("Failed to fetch job data. Please try again later.");

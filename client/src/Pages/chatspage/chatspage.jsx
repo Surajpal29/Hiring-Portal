@@ -40,7 +40,7 @@ const ChatsPage = () => {
     const fetchUserList = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/userchats/allusers"
+          "https://hiring-portal-virid.vercel.app/userchats/allusers"
         );
         // Check if the response data is an array
         console.log(response.data.userList);

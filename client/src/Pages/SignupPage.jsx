@@ -22,7 +22,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8000/user/register",
+        "https://hiring-portal-virid.vercel.app/user/register",
 
         formData
       ); // Adjust the endpoint according to your backend API
