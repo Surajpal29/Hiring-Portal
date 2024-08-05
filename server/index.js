@@ -24,7 +24,7 @@ app.use("/api", ApiData);
 app.use("/job", jobs);
 app.use("/userchats", message);
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Welcome!");
 });
 
