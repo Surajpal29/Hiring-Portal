@@ -28,8 +28,6 @@ const Login = () => {
         formData
       );
 
-      // console.log(response.data);
-
       const userData = response.data;
       console.log(userData);
       dispatch(addDataToStore(userData));
@@ -40,6 +38,7 @@ const Login = () => {
       });
 
       if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
         navigate("/");
         notify();
       }

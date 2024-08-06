@@ -9,7 +9,7 @@ import uploadmul from "../Utils/multerConfig.js";
 import path from "path";
 import fs from "fs";
 import jobpost from "../Models/jobpost.model.js";
-import { error } from "console";
+import validate from "../helper/fieldsCheck.js";
 
 dotenv.config();
 
@@ -23,7 +23,26 @@ const UserRoute = Router();
 UserRoute.post("/register", async (req, res) => {
   try {
     const { userName, email, phoneNumber, password } = req.body;
+    const required_fields = ["userName", "email", "phoneNumber", "password"];
+    const validation = validate(required_fields, req.body);
 
+    if (Object.keys(validation).length) {
+      return res.json({
+        success: 0,
+        status_code: 500,
+        message: validation,
+        result: {},
+      });
+    }
+
+    if (password && password.length < 6) {
+      return res.json({
+        success: 0,
+        status_code: 500,
+        message: "Password must be of 6 length",
+        result: {},
+      });
+    }
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -50,78 +69,44 @@ UserRoute.post("/register", async (req, res) => {
   }
 });
 
-// Login route
-// UserRoute.post("/login", async (req, res) => {
-//   // If authentication succeeds, this function will be called
-//   try {
-//     const { userName, password } = req.body;
-//     if (!userName || !password) {
-//       return res.status(400).json({
-//         message: "All fields are required",
-//         success: false,
-//       });
-//     }
-//     const firstName = userName;
-//     const userinfodata = await UserInfo.findOne({ firstName });
-//     console.log(userinfodata);
-//     const user = await User.findOne({ userName });
-//     if (!user) {
-//       return res.status(400).json({
-//         message: "Incorrect  username or password",
-//         success: false,
-//       });
-//     }
-//     const isPasswordMatch = await bcrypt.compare(password, user.password);
-//     if (!isPasswordMatch) {
-//       return res.status(400).json({
-//         message: "Incorrect  username or password",
-//         success: false,
-//       });
-//     }
-//     const tokenData = {
-//       userId: user._id,
-//     };
-//     const token = await jwt.sign(tokenData, process.env.JWT_SECRET, {
-//       expiresIn: "1d",
-//     });
-//     return res
-//       .status(200)
-//       .cookie("token", token, {
-//         maxAge: 1 * 24 * 60 * 60 * 1000,
-//         httpOnly: true,
-//         sameSite: "strict",
-//       })
-//       .json({
-//         userinfodata,
-//         user,
-//       });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
 UserRoute.post("/login", async (req, res) => {
   try {
     const { userName, password } = req.body;
+    const required_fields = ["userName", "password"];
+    const validation = validate(required_fields, req.body);
+    // console.log(userName, password);
 
-    if (!userName || !password) {
-      return res.status(400).json({
-        message: "All fields are required",
+    if (Object.keys(validation).length) {
+      return res.json({
         success: false,
+        status_code: 500,
+        message: validation,
+        result: {},
+      });
+    }
+
+    if (password && password.length < 6) {
+      return res.json({
+        success: 0,
+        status_code: 500,
+        message: "Password must be of 6 length",
+        result: {},
       });
     }
 
     const user = await User.findOne({ userName });
     if (!user) {
       return res.status(400).json({
-        message: "Incorrect username or password",
+        message: "User not found",
         success: false,
+        result: {},
       });
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       return res.status(400).json({
-        message: "Incorrect username or password",
+        message: "Incorrect credentials",
         success: false,
       });
     }
@@ -164,6 +149,7 @@ UserRoute.get("/logout", (req, res) => {
     message: "Logged out successfully.",
   });
 });
+
 UserRoute.post(
   "/UserInfoFormData",
   uploadmul.single("profilepic"),
@@ -185,6 +171,29 @@ UserRoute.post(
         jobType,
         Resume,
       } = req.body;
+
+      const required_fields = [
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber",
+        "gender",
+        "DOB",
+        "city",
+        "country",
+        "highestQualification",
+        "experience",
+      ];
+      const validation = validate(required_fields, req.body);
+
+      if (Object.keys(validation).length) {
+        return {
+          success: 0,
+          status_code: 500,
+          message: validation,
+          result: {},
+        };
+      }
 
       let profilepic = null;
       if (req.file) {

@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 // require("dotenv").config();
+// process.env.DB_URL
 dotenv.config();
 async function connectDB() {
   try {

@@ -12,10 +12,11 @@ const Login = () => {
     phoneNumber: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log(formData);
+    // console.log(formData);
   };
 
   const handleSubmit = async (e) => {
@@ -27,18 +28,23 @@ const Login = () => {
         formData
       ); // Adjust the endpoint according to your backend API
       console.log(response.data);
-      if (response) navigate("/UserInfoFormData");
-      setFormData({
-        userName: "",
-        email: "",
-        phoneNumber: "",
-        password: "",
-      });
-      notify();
+      if (response && response.data.success) {
+        navigate("/UserInfoFormData");
+        setFormData({
+          userName: "",
+          email: "",
+          phoneNumber: "",
+          password: "",
+        });
+        notify();
+      } else {
+        setErrorMessage(response.data.message);
+      }
+      console.log(errorMessage);
 
       // Redirect user to home page or perform any other action upon successful registration
     } catch (error) {
-      console.error("Error during registration:", error);
+      // console.error("Error during registration:", error);
       toast.error("Error during registration : ", error.message);
     }
   };
@@ -65,6 +71,11 @@ const Login = () => {
                 onChange={handleChange}
                 required
               />
+              {errorMessage.userName && (
+                <span className="text-red-600 z-10">
+                  {errorMessage.userName}{" "}
+                </span>
+              )}
               <input
                 className="p-2  rounded-xl border"
                 type="text"
@@ -73,6 +84,9 @@ const Login = () => {
                 placeholder="Email"
                 onChange={handleChange}
               />
+              {errorMessage.email && (
+                <span className="text-red-600 ">{errorMessage.email}</span>
+              )}
               <input
                 className="p-2  rounded-xl border"
                 type="text"
@@ -81,6 +95,11 @@ const Login = () => {
                 placeholder="phone number"
                 onChange={handleChange}
               />
+              {errorMessage.phoneNumber && (
+                <span className="text-red-600 ">
+                  {errorMessage.phoneNumber}
+                </span>
+              )}
               <input
                 className="p-2 rounded-xl border"
                 type="Password"
@@ -89,6 +108,12 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
               />
+              {errorMessage.password ||
+                (errorMessage && (
+                  <span className="text-red-600 ">
+                    {errorMessage.password || errorMessage}
+                  </span>
+                ))}
               <button
                 onClick={handleSubmit}
                 type="submit"

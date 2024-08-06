@@ -16,10 +16,12 @@ const userSchema = new mongoose.Schema(
     phoneNumber: {
       type: Number,
       required: true,
+      length: 10,
     },
     password: {
       type: String,
       required: true,
+      min: 6,
     },
   },
   { timestamps: true }

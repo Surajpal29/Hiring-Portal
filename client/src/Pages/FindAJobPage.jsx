@@ -97,7 +97,7 @@ const FindAJobPage = () => {
         </div>
         {/* top right profile */}
         {userData && userData[1] && userData[1].userinfodata && (
-          <div className="w-[20vw] h-[22vh] bg-purple-500 rounded-lg relative hidden md:flex items-center justify-center">
+          <div className="w-[20vw] h-[22vh] bg-purple-500 rounded-lg relative hidden lg:block md:flex items-center justify-center">
             <div className="w-[5vw] h-[5vw] rounded-full bg-cyan-300 absolute top-[-20%] left-[35%] border-4 border-white">
               <CheckCircleIcon className="text-blue-800 absolute right-0" />
               <div className="w-full h-full overflow-hidden border border-black rounded-full">
@@ -108,9 +108,9 @@ const FindAJobPage = () => {
                 />
               </div>
             </div>
-            <div className="absolute bottom-3 flex flex-col items-center justify-center">
+            <div className="absolute bottom-3  flex flex-col items-center justify-center">
               <h4 className="font-bold text-lg">
-                {userData[1].userinfodata.firstName}{" "}
+                {userData[1].userinfodata.firstName}
                 {userData[1].userinfodata.lastName}
               </h4>
               <h6 className="mb-2 flex gap-1">
@@ -127,77 +127,77 @@ const FindAJobPage = () => {
       </div>
       <div className="flex">
         {/* bottom left div */}
-        <div className="w-[94vw] border my-5 pt-5 pl-1 md:pl-10 md:ml-10 ml-1 rounded-lg">
+        <div className="w-[94vw] border-y my-5 pt-5 pb-5 pl-1 md:pl-10 md:ml-10 ml-1 rounded-lg">
           <h4 className="font-bold text-2xl mb-3">Recommended Jobs</h4>
           {loading ? (
             <p>Loading...</p>
           ) : error ? (
             <p className="text-red-500">{error}</p>
           ) : (
-            <div className="w-full flex gap-1 flex-wrap items-center justify-center">
-              {data.slice(0, 15).map((job, index) => (
+            <div className="w-full flex gap-2 flex-wrap items-center justify-center">
+              {data.slice(0, 16).map((job, index) => (
+                // <Card prop={{ job, index }} />
                 <div
                   key={index}
-                  className="min-w-[10vw] max-w-[80.5vw] sm:h-96 lg:h-72 lg:w-[17.5vw] bg-cyan-100 border-2 rounded-lg overflow-hidden pt-3 pl-3 relative flex flex-col justify-between"
+                  className="w-full md:w-[45%] lg:w-[22.5%]  border-2 rounded-lg overflow-hidden p-3 shadow-lg flex flex-col hover:scale-105 hover:transition-all"
                 >
-                  <div>
-                    <div className="w-full h-[4vw] flex items-center justify-between gap-1">
-                      {job.organization.logo_url && (
-                        <div className="w-[4vw] h-[4vw] bg-purple-400 rounded-lg overflow-hidden">
-                          <img
-                            src={job.organization.logo_url}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
-                      <div>
-                        <h5 className="text-sm font-bold">{job.title}</h5>
-                        <h6 className="text-xs">{job.organization.name}</h6>
+                  <div className="w-full flex items-center justify-between">
+                    {job.organization.logo_url && (
+                      <div className="w-16 h-16 md:w-12 md:h-12 lg:w-8 lg:h-8 bg-purple-400 rounded-lg overflow-hidden">
+                        <img
+                          src={job.organization.logo_url}
+                          alt="Company Logo"
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div className="lg:w-[3vw] h-[1.7vw] sm:w-fit sm:h-fit lg:flex items-center justify-center rounded-s-lg bg-yellow-600">
-                        <BookmarkBorderIcon />
-                      </div>
+                    )}
+                    <div className="flex flex-col flex-grow px-2">
+                      <h5 className="text-sm font-bold">{job.title}</h5>
+                      <h6 className="text-xs">{job.organization.name}</h6>
                     </div>
-                    <div className="w-full my-3 pr-3 grid grid-cols-2 items-start">
-                      <div className="w-[100%] gap-y-2 flex flex-col items-start">
-                        <span className="flex gap-2 text-xs items-center justify-center">
-                          <BusinessCenterOutlinedIcon /> <p>Full Time</p>
-                        </span>
-                        <span className="flex gap-2 text-xs items-center justify-center">
-                          <WorkHistoryOutlinedIcon />{" "}
-                          <p>
-                            {job.min_experience}
-                            <sup>+</sup> year
-                          </p>
-                        </span>
-                        <span className="flex gap-2 text-xs items-center justify-center">
-                          <CurrencyRupeeOutlinedIcon />{" "}
-                          <p>{job.salary_detail}</p>
-                        </span>
-                      </div>
-                      <div className="w-[100%] flex gap-y-2 flex-col items-start">
-                        <span className="flex gap-2 text-xs items-center justify-center">
-                          <CalendarMonthOutlinedIcon />{" "}
-                          <p>{job.last_updated}</p>
-                        </span>
-                        <span className="flex gap-2 items-center justify-center text-xs">
-                          <LocationOnOutlinedIcon /> <p>{job.address.line_1}</p>
-                        </span>
-                        <span className="flex gap-2 text-xs items-center justify-center">
-                          <GroupIcon /> <p>{job.no_of_openings}</p>
-                        </span>
-                      </div>
+                    <div className="w-8 h-8  rounded-lg bg-yellow-700 lg:block hidden">
+                      <BookmarkBorderIcon className="mx-1" />
                     </div>
                   </div>
-                  <div className="w-full mt-3 flex flex-col lg:flex-row lg:justify-between px-3 lg:absolute lg:bottom-3">
+                  <div className="w-full my-3 grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-y-2">
+                      <span className="flex gap-2 text-xs items-center">
+                        <BusinessCenterOutlinedIcon /> <p>Full Time</p>
+                      </span>
+                      <span className="flex gap-2 text-xs items-center">
+                        <WorkHistoryOutlinedIcon />
+                        <p>
+                          {job.min_experience}
+                          <sup>+</sup> year
+                        </p>
+                      </span>
+                      <span className="flex gap-2 text-xs items-center">
+                        <CurrencyRupeeOutlinedIcon /> <p>{job.salary_detail}</p>
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-y-2">
+                      <span className="flex gap-2 text-xs items-center">
+                        <CalendarMonthOutlinedIcon /> <p>{job.last_updated}</p>
+                      </span>
+                      <span className=" flex gap-2 text-xs items-center">
+                        <LocationOnOutlinedIcon />{" "}
+                        <p className="w-[100%] h-5 overflow-hidden">
+                          {job.address.line_1}
+                        </p>
+                      </span>
+                      <span className="flex gap-2 text-xs items-center">
+                        <GroupIcon /> <p>{job.no_of_openings}</p>
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-full font-bold flex items-center justify-between mt-3">
                     <button
-                      className="w-full lg:w-fit py-1 px-2 mb-2 lg:mb-0 rounded-2xl bg-red-500"
+                      className="w-fit my-1 py-1 flex items-center justify-center px-2 rounded-2xl bg-red-500"
                       onClick={() => handleJobLink(job.public_url)}
                     >
                       Apply Now
                     </button>
-                    <button className="w-full lg:w-fit h-fit py-1 px-2 rounded-2xl border border-red-500">
+                    <button className="w-fit h-fit py-1 flex items-center justify-center px-2 rounded-2xl border border-red-500">
                       Apply Later
                     </button>
                   </div>

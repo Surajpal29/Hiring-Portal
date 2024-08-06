@@ -14,6 +14,8 @@ ApiData.get("/data", async (req, res) => {
     );
     const data = response.data;
     const apidata = data.results.jobs;
+    // console.log(apidata);
+
     res.json(apidata);
   } catch (error) {
     console.error("Error fetching data:", error);

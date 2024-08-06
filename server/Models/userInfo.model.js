@@ -28,6 +28,7 @@ const userInfoSchema = new mongoose.Schema({
   },
   Gender: {
     type: String,
+    required: true,
   },
   city: {
     type: String,
