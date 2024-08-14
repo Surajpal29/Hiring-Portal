@@ -26,7 +26,7 @@ const JobOppurtunity = () => {
         // Fetch data from your backend endpoint
         setLoading(true);
         const response = await axios.get(
-          "hiring-portal-virid.vercel.app/api/data"
+          "https://hiring-portal-virid.vercel.app/api/data"
         );
         console.log("Fetched data:", response.data); // Log the response data
         if (Array.isArray(response.data)) {

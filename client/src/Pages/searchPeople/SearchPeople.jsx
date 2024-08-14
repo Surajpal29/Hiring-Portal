@@ -17,7 +17,7 @@ const SearchPeople = () => {
     const fetchUserList = async () => {
       try {
         const response = await axios.get(
-          "hiring-portal-virid.vercel.app/userchats/allusers"
+          "https://hiring-portal-virid.vercel.app/userchats/allusers"
         );
         console.log(response);
 

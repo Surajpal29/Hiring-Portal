@@ -24,7 +24,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "hiring-portal-virid.vercel.app/user/login",
+        "https://hiring-portal-virid.vercel.app/user/login",
         formData
       );
 

@@ -22,7 +22,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "hiring-portal-virid.vercel.app/user/register",
+        "https://hiring-portal-virid.vercel.app/user/register",
         formData
       );
       if (response && response.data.success) {

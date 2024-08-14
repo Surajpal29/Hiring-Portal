@@ -45,7 +45,7 @@ const PostJobPage = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "hiring-portal-virid.vercel.app/user/jobpost",
+        "https://hiring-portal-virid.vercel.app/user/jobpost",
         jobData
       );
       if (response.status === 200) {

@@ -110,7 +110,7 @@ const ChatsPage = () => {
       };
       try {
         const response = await axios.post(
-          "http://localhost:8000/userchats/messages",
+          "https://hiring-portal-virid.vercel.app/userchats/messages",
           newMessage
         );
         setMessages([...messages, response.data]); // Add the new message to the state
