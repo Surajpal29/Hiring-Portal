@@ -43,7 +43,7 @@ const ChatsPage = () => {
     const fetchUserList = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/userchats/allusers"
+          "hiring-portal-virid.vercel.app/userchats/allusers"
         );
         if (Array.isArray(response.data.userList)) {
           setChatUserList(response.data.userList);
@@ -62,7 +62,7 @@ const ChatsPage = () => {
 
       try {
         const response = await axios.get(
-          "http://localhost:8000/userchats/messages",
+          "hiring-portal-virid.vercel.app/userchats/messages",
           {
             params: {
               sender: currentUser,

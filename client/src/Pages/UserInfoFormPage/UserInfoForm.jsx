@@ -138,7 +138,7 @@ const UserInfoForm = () => {
       formDataToSend.append("jobType", formData.jobType);
 
       const response = await axios.post(
-        `http://localhost:8000/user/UserInfoFormData/${userId}`,
+        `hiring-portal-virid.vercel.app/user/UserInfoFormData/${userId}`,
         formDataToSend,
         {
           headers: {
