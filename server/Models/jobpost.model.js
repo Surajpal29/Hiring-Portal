@@ -3,15 +3,15 @@ import mongoose from "mongoose";
 const jobPostSchema = new mongoose.Schema({
   jobTitle: {
     type: String,
-    // required: true,
+    required: true,
   },
   jobDescription: {
     type: String,
-    // required: true,
+    required: true,
   },
   employMentType: {
     type: String,
-    // required: true,
+    required: true,
   },
   workingSchedule: {
     type: String,
@@ -19,41 +19,46 @@ const jobPostSchema = new mongoose.Schema({
   salary: {
     amount: {
       type: String,
+      required: true,
     },
     per: {
       type: String,
     },
   },
   experience: {
-    type: Number,
+    type: String, // Changed from Number to String
   },
   skills: {
     type: [String],
+    required: true,
   },
   companyName: {
     type: String,
-    // required: true,
+    required: true,
   },
   companyLogo: {
     type: String,
   },
   location: {
     type: String,
+    required: true,
   },
   link: {
     type: String,
+    required: true,
   },
   NoOfOpenings: {
     type: Number,
   },
   postedDate: {
-    type: Date, // Example field for date type
+    type: Date,
     default: Date.now,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "UserInfo",
+    ref: "UserInfos",
   },
 });
-const jobpost = mongoose.model("JobPost", jobPostSchema);
-export default jobpost;
+
+const JobPost = mongoose.model("JobPost", jobPostSchema);
+export default JobPost;

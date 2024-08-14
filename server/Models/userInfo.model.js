@@ -4,7 +4,6 @@ const userInfoSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true,
-    unique: true,
     lowercase: true,
   },
   lastName: {
@@ -17,18 +16,22 @@ const userInfoSchema = new mongoose.Schema({
     required: true,
     unique: true,
     lowercase: true,
+    match: [/.+@.+\..+/, "Please enter a valid email address"],
   },
   phoneNumber: {
-    type: Number,
+    type: String,
     required: true,
+    trim: true,
+    length: 10,
   },
   DOB: {
     type: Date,
     required: true,
   },
-  Gender: {
+  gender: {
     type: String,
-    required: true,
+    // required: true,
+    enum: ["Male", "Female", "Other"],
   },
   city: {
     type: String,
@@ -38,35 +41,38 @@ const userInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  HighestQualification: {
+  highestQualification: {
     type: String,
-    required: true,
   },
   skills: {
-    type: Array,
+    type: [String],
+    default: [],
   },
   experience: {
     type: String,
-    required: true,
   },
-  DomainOfInterest: {
-    type: Array,
+  domainOfInterest: {
+    type: [String],
+    default: [],
   },
   jobType: {
     type: String,
   },
-  Resume: {
+  resume: {
     type: String,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Users",
+    required: true,
   },
   profilepic: {
     type: String,
-    default: "/client/public/images",
+    default: "/default/profilepic.jpg",
   },
 });
 
-const UserInfo = mongoose.model("UserInfo", userInfoSchema);
+userInfoSchema.index({ email: 1, phoneNumber: 1 });
+
+const UserInfo = mongoose.model("UserInfos", userInfoSchema);
 export default UserInfo;

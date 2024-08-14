@@ -35,6 +35,7 @@ const routes = [
     path: "/",
     element: <Layout />,
     children: [
+      { path: "/:userId", element: <App /> },
       { path: "/", element: <App /> },
       { path: "find-a-job", element: <FindAJobPage /> },
       { path: "/about", element: <AboutUsPage /> },
@@ -45,7 +46,7 @@ const routes = [
   { path: "/login", element: <Login /> },
   { path: "/register", element: <SignupPage /> },
   { path: "/profile", element: <UserProfilePage /> },
-  { path: "/UserInfoFormData", element: <UserInfoForm /> },
+  { path: "/UserInfoFormData/:userId", element: <UserInfoForm /> },
   { path: "/blog", element: <BlogPage /> },
   { path: "/chats", element: <ChatsPage /> },
 ];

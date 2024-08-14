@@ -12,9 +12,7 @@ const AboutUsPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "https://hiring-portal-virid.vercel.app"
-        );
+        const response = await axios.get("http://localhost:8000");
         console.log(response.data.data);
         setJobs(response.data.data); // Assuming jobs are directly under 'jobs' key in the response
       } catch (error) {

@@ -1,13 +1,11 @@
-const validate = (required_fields, data) => {
-  const error = {};
-
-  for (let i of required_fields) {
-    if (!data[i]) {
-      error[i] = `${i} is required`;
+const validate = (required_fields, input_fields) => {
+  let errors = {};
+  required_fields.forEach((field) => {
+    if (!input_fields[field]) {
+      errors[field] = `${field} is required`;
     }
-  }
-
-  return error;
+  });
+  return errors;
 };
 
 export default validate;

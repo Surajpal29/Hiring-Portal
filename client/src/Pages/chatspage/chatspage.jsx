@@ -5,8 +5,6 @@ import data from "@emoji-mart/data";
 import CameraComponent from "./CameraComponent";
 import Message from "./MessageBubble";
 import SeeChatUserProfile from "./SeeChatUserProfile";
-
-// icons
 import AddIcon from "@mui/icons-material/Add";
 import CallIcon from "@mui/icons-material/Call";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
@@ -18,28 +16,34 @@ import Send from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 const ChatsPage = () => {
   const userData = useSelector((state) => state.userData);
-  const [chatuserlist, setChatUserList] = useState([]);
+  const [chatUserList, setChatUserList] = useState([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [showCamera, setShowCamera] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
-  const [chatUser, setChatUser] = useState();
+  const [chatUser, setChatUser] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const isTablet = useMediaQuery({
+    query: "(min-width: 769px) and (max-width: 1024px)",
+  });
+  const isDesktop = useMediaQuery({ query: "(min-width: 1025px)" });
 
   const currentUser =
-    userData[1] && userData[1].userinfodata
-      ? `${userData[1].userinfodata.firstName} ${userData[1].userinfodata.lastName}`
-      : "";
+    userData[1] && userData[1].userinfodata ? userData[1].userinfodata._id : "";
 
   useEffect(() => {
     const fetchUserList = async () => {
       try {
         const response = await axios.get(
-          "https://hiring-portal-virid.vercel.app/userchats/allusers"
+          "http://localhost:8000/userchats/allusers"
         );
         if (Array.isArray(response.data.userList)) {
           setChatUserList(response.data.userList);
@@ -52,7 +56,6 @@ const ChatsPage = () => {
     };
     fetchUserList();
   }, []);
-
   useEffect(() => {
     const fetchMessages = async () => {
       if (!currentUser || !chatUser) return;
@@ -63,15 +66,17 @@ const ChatsPage = () => {
           {
             params: {
               sender: currentUser,
-              receiver: chatUser,
+              receiver: chatUser._id,
             },
           }
         );
-        setMessages(response.data);
+        const messages = response.data || [];
+        setMessages(messages);
       } catch (error) {
         console.error("Error fetching messages", error);
       }
     };
+
     fetchMessages();
   }, [currentUser, chatUser]);
 
@@ -100,174 +105,195 @@ const ChatsPage = () => {
     if (message.trim()) {
       const newMessage = {
         sender: currentUser,
-        receiver: chatUser,
+        receiver: chatUser._id,
         text: message,
       };
       try {
-        await axios.post(
+        const response = await axios.post(
           "http://localhost:8000/userchats/messages",
           newMessage
         );
-        setMessages([...messages, newMessage]);
+        setMessages([...messages, response.data]); // Add the new message to the state
         setMessage("");
       } catch (error) {
         console.error("Error sending message", error);
+        alert("Failed to send message. Please try again.");
       }
     }
   };
 
   const selectedUserForChat = (item) => {
     setChatUser(item);
+    setShowChat(true);
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      {/* Upper section */}
-      <div
-        className={`flex flex-col md:flex-row gap-3 p-4 md:p-6 lg:p-8 relative ${
-          showProfile ? "blur-sm" : ""
-        }`}
-      >
-        {/* Upper left div */}
-        <div className="w-full md:w-1/3 p-4 border-2 border-gray-300 bg-white rounded-lg shadow-md flex gap-3 items-center">
-          <Link
-            to="/"
-            className="flex items-center justify-center p-2 border border-gray-300 rounded-full bg-blue-500 text-white"
-          >
-            <HomeIcon />
-          </Link>
-          <h3 className="font-bold text-xl md:text-2xl text-gray-700">Chats</h3>
-          <input
-            type="search"
-            placeholder="Search"
-            className="w-full border border-gray-300 rounded-3xl px-3 py-1 text-base md:text-lg"
-          />
-          <button className="p-2 rounded-full bg-red-500 text-white shadow-md">
-            <AddIcon />
-          </button>
-        </div>
-
-        {/* Upper right div */}
-        <div className="w-full md:w-2/3 p-4 border-2 border-gray-300 bg-white rounded-lg shadow-md flex flex-col md:flex-row gap-3 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 border border-gray-300 rounded-full bg-blue-400 flex items-center justify-center">
-              {chatUser && chatUser.profilepic ? (
-                <img
-                  src={chatUser.profilepic}
-                  alt="Profile"
-                  className="w-full h-full object-cover rounded-full"
-                />
-              ) : (
-                <span className="text-3xl text-white">
-                  {chatUser && chatUser.firstName[0]}
-                </span>
-              )}
-            </div>
-            <span>
-              <h4 className="font-semibold text-lg text-gray-700">
-                {chatUser && `${chatUser.firstName} ${chatUser.lastName}`}
-              </h4>
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowProfile(!showProfile)}
-              className="w-20 h-10 rounded-full border border-gray-300 text-gray-700 bg-gray-200 hover:bg-gray-300"
-            >
-              Profile
-            </button>
-            <button className="w-10 h-10 rounded-full border border-gray-300 text-gray-700 bg-gray-200 hover:bg-gray-300">
-              <CallIcon />
-            </button>
-            <button className="w-10 h-10 rounded-full border border-gray-300 text-gray-700 bg-gray-200 hover:bg-gray-300">
-              <VideoCallIcon />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Lower section */}
-      <div className="flex flex-col md:flex-row gap-3 p-4 md:p-6 lg:p-8">
-        {/* Lower left div */}
-        <div className="w-full md:w-1/3 p-4 border-2 border-gray-300 bg-white rounded-lg shadow-md overflow-y-auto max-h-[70vh]">
-          {Array.isArray(chatuserlist) &&
-            chatuserlist.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => selectedUserForChat(item)}
-                className="w-full flex items-center gap-3 p-2 border-b border-gray-300 hover:bg-gray-100 transition duration-200"
-              >
-                <div className="w-12 h-12 border border-gray-300 rounded-full bg-blue-400 flex items-center justify-center">
-                  {item.profilepic ? (
-                    <img
-                      src={item.profilepic}
-                      alt="Profile"
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : (
-                    <span className="text-3xl text-white">
-                      {item.firstName[0]}
-                    </span>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg text-gray-700">
-                    {`${item.firstName} ${item.lastName}`}
-                  </h3>
-                  <p className="text-gray-500">Message...</p>
-                </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-xs text-gray-500">13:56 PM</span>
-                  <span className="w-4 h-4 p-1 rounded-full bg-red-500 text-white flex items-center justify-center">
-                    1
-                  </span>
-                </div>
-              </button>
-            ))}
-        </div>
-
-        {/* Lower right div */}
+    <div
+      className={`flex min-h-screen ${
+        isMobile || isTablet ? "flex-col" : "flex-row"
+      } bg-gray-200`}
+    >
+      {/* Left section */}
+      {!showChat && (
         <div
-          className={`w-full md:w-2/3 p-4 border-2 border-gray-300 bg-white rounded-lg shadow-md relative ${
-            chatUser ? "" : "blur-sm"
+          className={`w-full ${isDesktop ? "lg:w-[25%] md:w-[35%]" : ""} ${
+            showProfile ? "blur-sm" : ""
           }`}
         >
-          <div className="max-h-[70vh] overflow-y-auto mb-20">
-            {messages.map((msg, index) => (
-              <Message
-                key={index}
-                text={msg.text}
-                isSentByCurrentUser={msg.sender === currentUser}
-              />
-            ))}
+          {/* Upper left div */}
+          <div className="w-full p-4 border-2 border-gray-300 bg-white rounded-lg shadow-md flex gap-1 items-center">
+            <div className="flex w-full gap-2">
+              <button className="flex-col">
+                <Link
+                  to="/"
+                  className="flex items-center justify-center p-2 border border-gray-300 rounded-full bg-blue-500 text-white"
+                >
+                  <HomeIcon />
+                </Link>
+              </button>
+              <div className="w-[100%] flex-col items-center justify-center">
+                <input
+                  type="search"
+                  placeholder="Search"
+                  className="w-[80%] mr-2 border border-gray-300 rounded-3xl px-3 py-2 text-base md:text-lg"
+                />
+                <button className="md:w-[15%] p-2 rounded-full bg-red-500 text-white shadow-md">
+                  <AddIcon />
+                </button>
+              </div>
+            </div>
+          </div>
+          {/* Lower left div */}
+          <div className="w-full h-[87%] p-4 border-2 border-gray-300 bg-white rounded-lg shadow-md overflow-y-auto">
+            {Array.isArray(chatUserList) &&
+              chatUserList.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => selectedUserForChat(item)}
+                  className="w-full flex lg:items-center gap-3 p-2 border-b border-gray-300 hover:bg-gray-100 transition duration-200"
+                >
+                  <div className="flex w-full">
+                    <div className="lg:w-12 lg:h-12 max-w-12 max-h-12 border border-gray-300 rounded-full bg-blue-400 hidden md:flex items-center justify-center">
+                      {item.profilepic ? (
+                        <img
+                          src={item.profilepic}
+                          alt="Profile"
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      ) : (
+                        <span className="text-3xl text-white">
+                          {item.firstName[0]}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex-col mx-2">
+                      <h3 className="font-semibold text-lg text-gray-700">
+                        {`${item.firstName} ${item.lastName}`}
+                      </h3>
+                      <p className="text-gray-500">Message...</p>
+                    </div>
+                  </div>
+                  <div className="hidden lg:flex flex-col items-end">
+                    <span className="text-xs text-gray-500">13:56 PM</span>
+                    <span className="lg:w-4 lg:h-4 w-fit h-fit p-1 rounded-full bg-red-500 text-white flex items-center justify-center">
+                      1
+                    </span>
+                  </div>
+                </button>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* Right section */}
+      {showChat && (
+        <div
+          className={`w-full ${isDesktop ? "lg:w-[100%]" : "flex-1"} ${
+            isMobile ? "h-screen" : ""
+          }`}
+        >
+          {/* Upper right div */}
+          <div className="w-full lg:p-4 border-2 border-gray-300 bg-white rounded-lg shadow-md flex flex-col md:flex-row gap-3 items-center justify-between">
+            <div className="grid grid-cols-4 lg:flex lg:items-center lg:justify-between w-full lg:gap-3">
+              <div className="lg:w-12 lg:h-12 border border-gray-300 rounded-full bg-blue-400 flex items-center justify-center">
+                {chatUser && chatUser.profilepic ? (
+                  <img
+                    src={chatUser.profilepic}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <span className="text-3xl text-white">
+                    {chatUser && chatUser.firstName
+                      ? chatUser.firstName[0]
+                      : "U"}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col ml-2">
+                <h3 className="font-semibold text-lg text-gray-700">
+                  {chatUser && `${chatUser.firstName} ${chatUser.lastName}`}
+                </h3>
+                <p className="text-gray-500">Online</p>
+              </div>
+              <div className="flex gap-2 items-center justify-end col-span-2 md:col-span-1">
+                <button
+                  onClick={() => setShowProfile(!showProfile)}
+                  className="p-2 rounded-full bg-blue-500 text-white"
+                >
+                  <AddIcon />
+                </button>
+                <button className="p-2 rounded-full bg-green-500 text-white">
+                  <CallIcon />
+                </button>
+                <button className="p-2 rounded-full bg-red-500 text-white">
+                  <VideoCallIcon />
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div
-            className={`flex items-center gap-3 border-t border-gray-300 pt-2 ${
-              showCamera ? "blur-sm" : ""
-            }`}
-          >
+          {/* Chat messages */}
+          {Array.isArray(messages) &&
+            messages.map((msg, index) => (
+              <Message
+                key={index}
+                text={msg?.text || "start msg"}
+                isSent={msg?.sender === currentUser}
+              />
+            ))}
+
+          {/* Chat input */}
+          <div className="w-full p-4 border-t-2 border-gray-300 bg-white flex items-center">
             <button
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300"
+              className="p-2 rounded-full bg-gray-200"
             >
               <EmojiEmotionsIcon />
             </button>
             {showEmojiPicker && (
-              <div className="absolute bottom-16 left-4">
-                <Picker data={data} onEmojiSelect={handleEmojiSelect} />
-              </div>
+              <Picker
+                data={data}
+                onEmojiSelect={handleEmojiSelect}
+                style={{ position: "absolute", bottom: "60px", left: "20px" }}
+              />
             )}
             <input
               type="text"
-              placeholder="Type a message"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type a message"
+              className="w-full ml-2 border border-gray-300 rounded-lg px-3 py-2"
             />
             <button
+              onClick={handleSendMessage}
+              className="ml-2 p-2 rounded-full bg-blue-500 text-white"
+            >
+              <Send />
+            </button>
+            <button
               onClick={toggleCamera}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300"
+              className="ml-2 p-2 rounded-full bg-blue-500 text-white"
             >
               <CameraIcon />
             </button>
@@ -282,30 +308,25 @@ const ChatsPage = () => {
                 <img
                   src={capturedImage}
                   alt="Captured"
-                  className="w-24 h-24 object-cover rounded-lg"
+                  className="w-20 h-20 object-cover rounded-lg"
                 />
                 <button
                   onClick={handleDeletePhoto}
-                  className="absolute top-0 right-0 w-6 h-6 flex items-center justify-center rounded-full bg-red-500 text-white"
+                  className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full"
                 >
                   <DeleteIcon />
                 </button>
               </div>
             )}
-            <button
-              onClick={handleSendMessage}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600"
-            >
-              <Send />
-            </button>
           </div>
         </div>
-      </div>
+      )}
 
-      {showProfile && (
+      {/* User profile */}
+      {showProfile && chatUser && (
         <SeeChatUserProfile
-          user={chatUser}
-          onClose={() => setShowProfile(false)}
+          person={chatUser}
+          onData={(data) => setShowProfile(data)}
         />
       )}
     </div>

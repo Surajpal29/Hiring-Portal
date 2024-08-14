@@ -54,4 +54,13 @@ jobs.post("/savedjobs", async (req, res) => {
   }
 });
 
+// jobs.get("/getsavejob", async (req, res) => {
+//   try {
+//     const result = await savedJobs.find();
+//     console.log(result);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// });
+
 export { jobs };

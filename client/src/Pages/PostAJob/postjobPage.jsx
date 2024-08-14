@@ -4,6 +4,9 @@ import axios from "axios";
 const PostJobPage = () => {
   const [skill, setSkill] = useState("");
   const [skills, setSkills] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(true); // True for success, false for error
+
   const [jobData, setJobData] = useState({
     jobTitle: "",
     jobDescription: "",
@@ -42,13 +45,38 @@ const PostJobPage = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://hiring-portal-virid.vercel.app/user/jobpost",
+        "http://localhost:8000/user/jobpost",
         jobData
       );
-      console.log(response.data);
-      if (response.status === 200) console.log("Job post success");
+      if (response.status === 200) {
+        setIsSuccess(true);
+        setSuccessMessage("Job post successful!");
+        console.log("Job post success");
+        // Clear form fields
+        setJobData({
+          jobTitle: "",
+          jobDescription: "",
+          employMentType: "full time",
+          workingSchedule: "day shift",
+          salary: "",
+          salaryType: "yearly",
+          experience: 0,
+          skills: [],
+          companyName: "",
+          companyLogo: "",
+          location: "",
+          link: "",
+          NoOfOpenings: 0,
+          postedDate: new Date(),
+          createdBy: {},
+        });
+        setSkills([]);
+        setSuccessMessage("Job post successful!"); // Show success message
+      }
     } catch (error) {
       console.error("Error posting job:", error);
+      setIsSuccess(false); // Set to false for error
+      setSuccessMessage("Failed to post the job. Please try again.");
     }
   };
 
@@ -306,6 +334,24 @@ const PostJobPage = () => {
               Post
             </button>
           </div>
+          {/* Success/Error Message */}
+          {successMessage && (
+            <div
+              className={`mt-4 mx-auto p-4 max-w-md border-l-4 ${
+                isSuccess
+                  ? "border-green-500 bg-green-100"
+                  : "border-red-500 bg-red-100"
+              } shadow-lg rounded-lg`}
+            >
+              <p
+                className={`text-lg ${
+                  isSuccess ? "text-green-800" : "text-red-800"
+                } font-bold text-center`}
+              >
+                {successMessage}
+              </p>
+            </div>
+          )}
         </div>
       </form>
     </div>

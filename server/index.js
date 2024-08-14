@@ -3,7 +3,7 @@ import axios from "axios";
 import cors from "cors";
 import bodyParser from "body-parser";
 import connectDB from "./DB/ConnectDb.DB.js";
-import { UserRoute } from "./Routes/user.route.js";
+import UserRoute from "./Routes/user.route.js";
 import { ApiData } from "./Controlers/jobApi.controlers.js";
 import { jobs } from "./Routes/savedByUser.route.js";
 import { message } from "./Routes/Message.route.js";
